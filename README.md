@@ -1,6 +1,7 @@
-# Big Data – Das Öl des 21. Jahrhunderts
+# Statische Typsysteme für JavaScript
 
-**Vortrag im Oberseminar Datenbanksysteme – Aktuelle Trends**
+**Entwicklung eines Transpilers zur Übersetzung von Flow nach TypeScript**
 
-Jonathan Gruber, 2017<br>
+Masterkolloqium<br>
+Jonathan Gruber, 2019<br>
 HTWK Leipzig
