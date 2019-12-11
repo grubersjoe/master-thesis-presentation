@@ -1,0 +1,178 @@
+\documentclass{beamer}
+
+% Metadata
+\title{Statische Typsysteme für JavaScript}
+\subtitle{Entwicklung eines Transpilers zur Übersetzung von Flow nach TypeScript}
+\author{Jonathan Gruber}
+\institute{HTWK Leipzig}
+\date{18. Dezember 2019}
+
+% Encoding
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Babel
+\usepackage[ngerman]{babel}
+
+% Fonts
+\usepackage[sb]{plex-sans}
+\usepackage[scale=0.8,sb]{plex-mono}
+
+% Biber (references)
+\usepackage[backend=biber]{biblatex}
+\addbibresource{src/references.bib}
+
+\let\OLDitemize\itemize
+\renewcommand\itemize{\OLDitemize\addtolength{\itemsep}{4pt}}
+
+\let\OLDenumerate\enumerate
+\renewcommand\enumerate{\OLDenumerate\addtolength{\itemsep}{2pt}}
+
+\usepackage{csquotes}
+\usepackage{longtable, tabu, booktabs}
+\usepackage{tikz}
+\usepackage{hyperref}
+
+% Code listings
+\usepackage{listings}
+
+\lstset{
+  aboveskip=0pt,
+  basicstyle=\linespread{1.04}\small\ttfamily,
+  belowcaptionskip=0pt,
+  belowskip=0pt,
+  breakatwhitespace=true,
+  breaklines=true,
+  comment=[l]{//},
+  commentstyle=\color{darkgray},
+  emph={?, any, Array, boolean, empty, interface, mixed, never, number, null, opaque, string, this, unknown, void, T, TypeAlias},
+  emphstyle=\itshape,
+  extendedchars=false,
+  keywords={abstract, arguments, await, boolean, break, byte, case, catch, char, class, const, continue, debugger, declare, default, delete, do, double, else, enum, eval, export, extends, false, final, finally, float, for, function, goto, if, implements, import, in, instanceof, int, let, long, module, native, new, of, package, private, protected, public, return, short, static, super, switch, synchronized, this, throw, throws, transient, true, try, typeof, var, volatile, while, with, yield, type},
+  keywordstyle=\bfseries,
+  morecomment=[s]{/*}{*/},
+  morestring=[b]',
+  morestring=[b]",
+  numbers=left,
+  numbersep=12pt,
+  numberstyle=\linespread{1.04}\scriptsize\ttfamily\color{gray},
+  showspaces=false,
+  showstringspaces=false,
+  stepnumber=1,
+  stringstyle=\color{black},
+  tabsize=4,
+}
+
+% The following ensures that only straight quotes are used inside of \texttt
+\usepackage{upquote}
+\usepackage{etoolbox}
+
+\robustify{\texttt}
+\let\originaltexttt\texttt
+
+\begingroup
+\catcode`'=\active
+\catcode``=\active
+\globaldefs1
+\makeatletter
+\renewrobustcmd{\texttt}[1]{%
+  {%
+  \everyeof{\noexpand}\endlinechar-1
+  \expandafter\catcode\string``=\active
+  \expandafter\catcode\string`'=\active
+  \let'\textquotesingle
+  \let`\textasciigrave
+  \ifx\encodingdefault\upquote@OTone
+    \ifx\ttdefault\upquote@cmtt
+    \def'{\char13 }\def`{\char18 }%
+    \fi
+  \fi
+  \scantokens{\originaltexttt{#1}}%
+  }%
+}%
+\endgroup
+
+
+% Theme
+\definecolor{pcolor}{HTML}{00695c}
+\usetheme{Frankfurt}
+\setbeamercolor{bibliography entry author}{fg=black}
+\setbeamercolor{bibliography entry location}{fg=black}
+\setbeamercolor{bibliography entry note}{fg=black}
+\setbeamercolor{bibliography entry title}{fg=black}
+\setbeamercolor{enumerate item}{fg=black}
+\setbeamercolor{enumerate subitem}{fg=black}
+\setbeamercolor{itemize item}{fg=black}
+\setbeamercolor{itemize subitem}{fg=black}
+\setbeamerfont{frametitle}{series=\bfseries,parent=structure,}
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamertemplate{enumerate items}[default]
+\setbeamertemplate{frametitle}[default][shadow=false]
+\setbeamertemplate{footline}[frame number]
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{title page}[default][rounded=true,shadow=false]
+\usecolortheme[named=pcolor]{structure}
+
+% Small font in bibliography
+\renewcommand*{\bibfont}{\small}
+
+% Titlepage
+\makeatletter
+\setbeamertemplate{title page}
+{
+    \vfill
+    \begin{centering}
+        \setbeamercolor{title}{bg=white,fg=pcolor}
+
+        \begin{beamercolorbox}[center]{author}
+            \usebeamerfont{author}\normalsize Masterkolloquium
+        \end{beamercolorbox}
+
+        \vspace{0.5cm}
+
+        \begin{beamercolorbox}[sep=8pt,center]{title}
+          \usebeamerfont{title}{\huge\textbf{Statische Typsysteme\\für JavaScript}}
+        \end{beamercolorbox}
+
+        \setbeamercolor{title}{bg=white,fg=black}
+        \begin{beamercolorbox}[sep=6pt,center]{title}
+            \usebeamerfont{title}\large Entwicklung eines Transpilers zur\\Übersetzung von Flow nach TypeScript
+        \end{beamercolorbox}
+
+        \vspace{0.5cm}
+
+        \begin{beamercolorbox}[sep=3pt,center]{author}
+            \usebeamerfont{author}\normalsize\insertauthor
+        \end{beamercolorbox}
+
+        \begin{beamercolorbox}[sep=3pt,center]{institute}
+            \usebeamerfont{institute}{\normalsize\insertinstitute}
+        \end{beamercolorbox}
+
+        \vspace{0.5cm}
+
+        \begin{beamercolorbox}[sep=3pt,center]{date}
+            \usebeamerfont{date}{\normalsize\insertdate}
+        \end{beamercolorbox}
+    \end{centering}
+    \vfill
+}
+\makeatother
+
+% Footnotes without markers
+% \newcommand\blfootnote[1]{%
+%     \begingroup
+%     \renewcommand\thefootnote{}\footnote{#1}%
+%     \addtocounter{footnote}{-1}%
+%     \endgroup
+% }
+
+\newcommand*\circled[1]{
+    \tikz[baseline=(char.base)]{
+        \node[shape=circle,fill=pcolor,text=white,inner sep=3pt] (char) {\textbf{#1}};
+    }
+}
+
+\newcommand{\chaptitle}[2]{\Large\color{pcolor}\textbf{\circled{#1}\hspace{0.4em}#2}}

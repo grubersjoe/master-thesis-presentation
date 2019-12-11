@@ -1,0 +1,116 @@
+\input{src/preamble.tex}
+
+\begin{document}
+  \frame[plain]{\titlepage}
+
+  \frame[plain]{
+    \frametitle{}
+    \huge{\textbf{Gliederung}}
+    \vspace{1em}
+    \Large
+    \begin{enumerate}
+      \item Problemstellung
+      \item Umsetzung des Transpilers
+      \item Ergebnisse
+      \item Zusammenfassung
+    \end{enumerate}
+  }
+
+  \section{Problemstellung}
+    \begin{frame}
+      \frametitle{Motivation}
+      \begin{itemize}
+        \item JavaScripts \emph{dynamische} Typisierung erschwert die Entwicklung korrekter, sicherer und wartbarer Anwendungen~\autocite{NIKHIL:2014,PRADEL:2015,BIERMAN:2014}
+        \item Typ von Werten wird zur Laufzeit implizit umgewandelt (\textit{type coercion})
+        \item Kritisches Laufzeitverhalten wird zum Teil ignoriert
+        \item aber: bessere Typsicherheit durch Einsatz eines\\\emph{statischen} Typsystems möglich
+        \item Zwei Vertreter: Flow~\autocite{FLOW:PAPER} und TypeScript~\autocite{TYPESCRIPT:SPEC}
+      \end{itemize}
+    \end{frame}
+
+    \begin{frame}[fragile]
+      \frametitle{Beispiel: Statische Typisierung durch Flow}
+      \begin{lstlisting}
+function linearSearch<T>(list: Array<T>, searchValue: T): number | null {
+  for (const [index, value] of list.entries()) {
+    if (value === searchValue) {
+      return index;
+    }
+  }
+  return null;
+}
+
+linearSearch<number>([3, 56, 10], 56);           // 1
+linearSearch<number>([3, 56, 10], 12);           // null
+linearSearch<string>(['foo', 'bar', 'baz'], 3);  // Typfehler
+      \end{lstlisting}
+    \end{frame}
+
+    \frame{
+      \frametitle{Zielsetzung der Masterarbeit}
+      \begin{itemize}
+        \item Ausgangslage: \textit{Spreadshirt} setzt Flow zur statischen Typisierung von JavaScript-Anwendungen ein
+        \item Ziel: Automatische Migration bestehender Flow"=Projekte nach TypeScript, da erwartet wird, dass TypeScript Vorteile bietet
+        \item Händische Migration fehleranfällig und zeitaufwändig
+        \item Lösung: Entwicklung eines \textbf{Transpilers} zur Übersetzung der Flow-Typisierung nach TypeScript
+        \item Transpiler = Compiler, der Quelltext einer Programmier"=sprache in eine andere bedeutungsgleich übersetzt
+      \end{itemize}
+    }
+
+
+
+    \begin{frame}
+      \frametitle{Gründe für Wechsel des statischen Typsystems}
+
+    \end{frame}
+
+  \section{Umsetzung}
+    \begin{frame}
+      \frametitle{TODO}
+
+    \end{frame}
+
+    \begin{frame}
+      \frametitle{TODO}
+
+    \end{frame}
+
+  \section{Ergebnisse}
+    \begin{frame}
+      \frametitle{TODO}
+
+    \end{frame}
+
+    \begin{frame}
+      \frametitle{TODO}
+
+    \end{frame}
+
+  \section{Zusammenfassung}
+  \begin{frame}
+    \frametitle{TODO}
+
+  \end{frame}
+
+  \begin{frame}
+    \frametitle{TODO}
+
+  \end{frame}
+
+  \appendix
+
+  \begin{frame}[noframenumbering,plain]
+    % empty
+  \end{frame}
+
+  \begin{frame}[noframenumbering,plain]
+    \frametitle{TODO}
+    Nice-to-have-Folien
+  \end{frame}
+
+  \frame[allowframebreaks,noframenumbering,plain] {
+    \frametitle{Quellenverzeichnis}
+    \printbibliography
+  }
+
+\end{document}
