@@ -15,6 +15,7 @@
 \usepackage[ngerman]{babel}
 
 % Fonts
+\usepackage{arev} % for Math
 \usepackage[sb]{plex-sans}
 \usepackage[scale=0.8,sb]{plex-mono}
 
@@ -93,8 +94,36 @@
 \endgroup
 
 
+% Trees
+\usepackage{forest,subcaption}
+
+% Style for edge labels
+\tikzset{edge/.style = {
+  midway,fill=white,font=\scriptsize
+}}
+
+\forestset{
+  font=\footnotesize,
+  default preamble={
+    for tree = {
+      l=1.5cm,
+      s sep=.75cm,
+      inner xsep=2mm,
+      inner ysep=1.25mm,
+      minimum height=4.75mm,
+      rectangle,
+      rounded corners=2,
+      fill=mlightgray,
+      font=\footnotesize,
+    }
+  }
+}
+
+
 % Theme
-\definecolor{pcolor}{HTML}{00695c}
+\definecolor{pcolor}{HTML}{06594f}
+\definecolor{scolor}{HTML}{01517f}
+\definecolor{mlightgray}{HTML}{DCDCDC}
 \usetheme{Frankfurt}
 \setbeamercolor{bibliography entry author}{fg=black}
 \setbeamercolor{bibliography entry location}{fg=black}
@@ -104,7 +133,7 @@
 \setbeamercolor{enumerate subitem}{fg=black}
 \setbeamercolor{itemize item}{fg=black}
 \setbeamercolor{itemize subitem}{fg=black}
-\setbeamerfont{frametitle}{series=\bfseries,parent=structure,}
+\setbeamerfont{frametitle}{series=\bfseries,parent=structure}
 \setbeamertemplate{bibliography item}{\insertbiblabel}
 \setbeamertemplate{blocks}[rounded][shadow=false]
 \setbeamertemplate{enumerate items}[default]
@@ -122,57 +151,62 @@
 \makeatletter
 \setbeamertemplate{title page}
 {
-    \vfill
-    \begin{centering}
-        \setbeamercolor{title}{bg=white,fg=pcolor}
+  \vfill
+  \begin{centering}
+    \setbeamercolor{title}{bg=white,fg=black}
 
-        \begin{beamercolorbox}[center]{author}
-            \usebeamerfont{author}\normalsize Masterkolloquium
-        \end{beamercolorbox}
+    \begin{beamercolorbox}[center]{author}
+      \usebeamerfont{author}\normalsize Masterkolloquium
+    \end{beamercolorbox}
 
-        \vspace{0.5cm}
+    \vspace{0.5cm}
 
-        \begin{beamercolorbox}[sep=8pt,center]{title}
-          \usebeamerfont{title}{\huge\textbf{Statische Typsysteme\\für JavaScript}}
-        \end{beamercolorbox}
+    \begin{beamercolorbox}[sep=8pt,center]{title}
+      \usebeamerfont{title}{\huge\textbf{Statische Typsysteme\\für JavaScript}}
+    \end{beamercolorbox}
 
-        \setbeamercolor{title}{bg=white,fg=black}
-        \begin{beamercolorbox}[sep=6pt,center]{title}
-            \usebeamerfont{title}\large Entwicklung eines Transpilers zur\\Übersetzung von Flow nach TypeScript
-        \end{beamercolorbox}
+    \begin{beamercolorbox}[sep=6pt,center]{title}
+      \usebeamerfont{title}\large Entwicklung eines Transpilers zur\\Übersetzung von Flow nach TypeScript
+    \end{beamercolorbox}
 
-        \vspace{0.5cm}
+    \vspace{0.5cm}
 
-        \begin{beamercolorbox}[sep=3pt,center]{author}
-            \usebeamerfont{author}\normalsize\insertauthor
-        \end{beamercolorbox}
+    \begin{beamercolorbox}[sep=3pt,center]{author}
+      \usebeamerfont{author}\normalsize\insertauthor
+    \end{beamercolorbox}
 
-        \begin{beamercolorbox}[sep=3pt,center]{institute}
-            \usebeamerfont{institute}{\normalsize\insertinstitute}
-        \end{beamercolorbox}
+    \begin{beamercolorbox}[sep=3pt,center]{institute}
+      \usebeamerfont{institute}{\normalsize\insertinstitute}
+    \end{beamercolorbox}
 
-        \vspace{0.5cm}
+    \vspace{0.5cm}
 
-        \begin{beamercolorbox}[sep=3pt,center]{date}
-            \usebeamerfont{date}{\normalsize\insertdate}
-        \end{beamercolorbox}
-    \end{centering}
-    \vfill
+    \begin{beamercolorbox}[sep=3pt,center]{date}
+      \usebeamerfont{date}{\normalsize\insertdate}
+    \end{beamercolorbox}
+  \end{centering}
+  \vfill
 }
 \makeatother
 
-% Footnotes without markers
-% \newcommand\blfootnote[1]{%
-%     \begingroup
-%     \renewcommand\thefootnote{}\footnote{#1}%
-%     \addtocounter{footnote}{-1}%
-%     \endgroup
-% }
-
-\newcommand*\circled[1]{
-    \tikz[baseline=(char.base)]{
-        \node[shape=circle,fill=pcolor,text=white,inner sep=3pt] (char) {\textbf{#1}};
-    }
+\newcommand{\pie}[1]{%
+	\begin{tikzpicture}%
+    \draw[pcolor] (0,0) circle (0.7ex);%
+    \fill[rotate=-90,fill=pcolor] (0.7ex,0) arc (0:-#1*180:0.7ex) -- (0,0) -- cycle;%
+	\end{tikzpicture}%
 }
 
-\newcommand{\chaptitle}[2]{\Large\color{pcolor}\textbf{\circled{#1}\hspace{0.4em}#2}}
+\newcommand*\circled[1]{
+  \tikz[baseline=(char.base)]{
+    \node[shape=rectangle,fill=white,text=scolor,inner sep=6pt] (char) {#1};
+  }
+}
+
+\newcommand{\secframe}[2]{
+  {
+    \setbeamercolor{background canvas}{bg=scolor}
+    \begin{frame}[plain]
+      \Huge\color{white}\textbf{\circled{#1}\hspace{0.5em}#2}
+    \end{frame}
+  }
+}

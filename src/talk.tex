@@ -5,31 +5,33 @@
 
   \frame[plain]{
     \frametitle{}
-    \huge{\textbf{Gliederung}}
+    \LARGE{\textbf{Überblick}}
     \vspace{1em}
-    \Large
+    \large
     \begin{enumerate}
       \item Problemstellung
       \item Umsetzung des Transpilers
-      \item Ergebnisse
+      \item Ergebnisse und Auswertung
       \item Zusammenfassung
     \end{enumerate}
   }
 
   \section{Problemstellung}
+    \secframe{1}{Problemstellung}
+
     \begin{frame}
       \frametitle{Motivation}
       \begin{itemize}
-        \item JavaScripts \emph{dynamische} Typisierung erschwert die Entwicklung korrekter, sicherer und wartbarer Anwendungen~\autocite{NIKHIL:2014,PRADEL:2015,BIERMAN:2014}
+        \item JavaScripts \textbf{dynamische Typisierung} erschwert die Entwicklung korrekter, sicherer und wartbarer Anwendungen~\autocite{NIKHIL:2014,PRADEL:2015,BIERMAN:2014}
         \item Typ von Werten wird zur Laufzeit implizit umgewandelt (\textit{type coercion})
         \item Kritisches Laufzeitverhalten wird zum Teil ignoriert
-        \item aber: bessere Typsicherheit durch Einsatz eines\\\emph{statischen} Typsystems möglich
-        \item Zwei Vertreter: Flow~\autocite{FLOW:PAPER} und TypeScript~\autocite{TYPESCRIPT:SPEC}
+        \item aber: bessere Typsicherheit durch Einsatz eines\\\textbf{statischen Typsystems} möglich
+        \item Zwei Vertreter: \textit{Flow}~\autocite{FLOW:PAPER} und \textit{TypeScript}~\autocite{TYPESCRIPT:SPEC}
       \end{itemize}
     \end{frame}
 
     \begin{frame}[fragile]
-      \frametitle{Beispiel: Statische Typisierung durch Flow}
+      \frametitle{Beispiel -- Statische Typisierung durch Flow}
       \begin{lstlisting}
 function linearSearch<T>(list: Array<T>, searchValue: T): number | null {
   for (const [index, value] of list.entries()) {
@@ -50,34 +52,147 @@ linearSearch<string>(['foo', 'bar', 'baz'], 3);  // Typfehler
       \frametitle{Zielsetzung der Masterarbeit}
       \begin{itemize}
         \item Ausgangslage: \textit{Spreadshirt} setzt Flow zur statischen Typisierung von JavaScript-Anwendungen ein
-        \item Ziel: Automatische Migration bestehender Flow"=Projekte nach TypeScript, da erwartet wird, dass TypeScript Vorteile bietet
+        \item Ziel: Migration bestehender Flow"=Projekte nach TypeScript
         \item Händische Migration fehleranfällig und zeitaufwändig
         \item Lösung: Entwicklung eines \textbf{Transpilers} zur Übersetzung der Flow-Typisierung nach TypeScript
-        \item Transpiler = Compiler, der Quelltext einer Programmier"=sprache in eine andere bedeutungsgleich übersetzt
+        \item Transpiler = Compiler, der Quelltext einer Programmier"=sprache in eine andere übersetzt
       \end{itemize}
     }
 
+    \begin{frame}[fragile]
+      \frametitle{Beispiel einer Typ-Übersetzung}
 
+      \begin{lstlisting}[
+        numbers=none,
+        emph={number,null,undefined}
+      ]
+// Flow
+type MaybeNumber = ?number;
+
+
+// TypeScript
+type MaybeNumber = number | null | undefined;
+      \end{lstlisting}
+    \end{frame}
 
     \begin{frame}
-      \frametitle{Gründe für Wechsel des statischen Typsystems}
-
+      \frametitle{Ziele der Migration zu TypeScript}
+      \begin{enumerate}
+        \item Erkennung weiterer Typ- und Programmfehler
+        \item Unterstützung externer Bibliotheken
+        \item Performance der Typüberprüfungen
+        \item Zukunftssicherheit und Transparenz der Technologie
+      \end{enumerate}
     \end{frame}
 
   \section{Umsetzung}
-    \begin{frame}
-      \frametitle{TODO}
+    \secframe{2}{Umsetzung}
 
+    \begin{frame}
+      \frametitle{Technische Anforderungen an den Transpiler}
+      \begin{enumerate}
+        \item Äquivalente und vollständige Übersetzung der Flow-Typen
+        \item Beibehaltung der Programmsemantik
+        \item Unterstützung aktueller und vorläufiger JavaScript- sowie JSX-Syntax
+        \item Verarbeitung gesamter Projektverzeichnisse
+        \item Beibehaltung der Quelltextformatierung
+      \end{enumerate}
     \end{frame}
 
     \begin{frame}
-      \frametitle{TODO}
+      \frametitle{Implementierung als Babel-Plugin}
+      \begin{itemize}
+        \item \textit{Babel}~\autocite{BABEL} als Grundlage der Implementierung
+        \item Babel = Transpiler für JavaScript
+        \item unterstützt alle geforderten Syntaxarten
+        \item Erweiterung durch Plugins möglich
+        % \item Programmtransformation durch Manipulation des abstrakten Syntaxbaums (AST)
+      \end{itemize}
+    \end{frame}
 
+    \begin{frame}
+      \frametitle{Programmtransformation durch Babel}
+      \begin{enumerate}
+        \item Parsen des Eingabequelltexts\linebreak$\Rightarrow$ abstrakter Syntaxbaum (AST) des Programms
+        \item Programmtransformation durch Manipulation der AST-Knoten mittels \textit{Besucher-Entwurfsmuster}
+        \item Generierung des Ausgabequelltexts
+      \end{enumerate}
+    \end{frame}
+
+    \begin{frame}[fragile]
+      \frametitle{Transformation des AST}
+
+      \begin{columns}
+        \begin{column}{.48\textwidth}
+          \begin{lstlisting}[numbers=none]
+// @flow
+type Alias = mixed;
+          \end{lstlisting}
+          \vspace{5mm}
+          \ttfamily
+          \begin{forest}
+            for tree = {l=1.6cm, s sep=0.4cm}
+            [Program
+              [TypeAlias, edge label={node[edge]{body}}
+                [Identifier, edge label={node[edge]{id}}
+                  [\enquote{Alias}, edge label={node[edge]{name}}]
+                ]
+                [MixedTypeAnnotation, edge label={node[edge]{right}}]
+              ]
+            ]
+          \end{forest}
+        \end{column}
+        \begin{column}{.04\textwidth}
+
+        \end{column}
+        \begin{column}{.48\textwidth}
+          \begin{lstlisting}[numbers=none]
+  // TypeScript
+  type Alias = unknown;
+          \end{lstlisting}
+          \vspace{5mm}
+          \ttfamily
+          \begin{forest}
+            for tree = {l=1.6cm, s sep=0.5cm}
+            [Program
+              [TSTypeAliasDeclaration, edge label={node[edge]{body}}
+                [Identifier, edge label={node[edge]{id}}
+                  [\enquote{Alias}, edge label={node[edge]{name}}]
+                ]
+                [TSUnknownKeyword, edge label={node[edge]{typeAnnotation}}]
+              ]
+            ]
+          \end{forest}
+        \end{column}
+      \end{columns}
+    \end{frame}
+
+    \begin{frame}[plain]
+      % \frametitle{Architektur}
+      \begin{columns}
+        \column{\dimexpr\paperwidth-6mm}
+        \begin{figure}
+          \includegraphics[width=\textwidth]{src/figures/architecture-overview.pdf}
+        \end{figure}
+      \end{columns}
+    \end{frame}
+
+    \begin{frame}
+      \frametitle{Spezialfälle}
+      TODO: Spezialfälle der Transformation
     \end{frame}
 
   \section{Ergebnisse}
+    \secframe{3}{Ergebnisse und\\*\hspace{2.05em}Auswertung}
+
     \begin{frame}
-      \frametitle{TODO}
+      \frametitle{Durchführung der Migration}
+
+    \end{frame}
+
+    \begin{frame}
+      \frametitle{Erkennung weiterer Typ- und Programmfehler}
+
 
     \end{frame}
 
@@ -87,30 +202,35 @@ linearSearch<string>(['foo', 'bar', 'baz'], 3);  // Typfehler
     \end{frame}
 
   \section{Zusammenfassung}
-  \begin{frame}
-    \frametitle{TODO}
+    \secframe{4}{Zusammenfassung}
 
-  \end{frame}
+    \begin{frame}
+      \frametitle{TODO}
 
-  \begin{frame}
-    \frametitle{TODO}
+    \end{frame}
 
-  \end{frame}
+    \begin{frame}
+      \frametitle{TODO}
+
+    \end{frame}
 
   \appendix
 
-  \begin{frame}[noframenumbering,plain]
-    % empty
-  \end{frame}
+    \begin{frame}[noframenumbering,plain]
+      % empty
+    \end{frame}
 
-  \begin{frame}[noframenumbering,plain]
-    \frametitle{TODO}
-    Nice-to-have-Folien
-  \end{frame}
+  \section{Anhang}
+    \setbeamertemplate{footline}{}
 
-  \frame[allowframebreaks,noframenumbering,plain] {
-    \frametitle{Quellenverzeichnis}
-    \printbibliography
-  }
+    \begin{frame}[noframenumbering]
+      \frametitle{Evaluation bestehender Werkzeuge}
+      \input{src/tables/tools.tex}
+    \end{frame}
+
+    \frame[allowframebreaks,noframenumbering,plain] {
+      \frametitle{Quellenverzeichnis}
+      \printbibliography
+    }
 
 \end{document}
