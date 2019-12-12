@@ -12,7 +12,7 @@
       \item Problemstellung
       \item Umsetzung des Transpilers
       \item Ergebnisse und Auswertung
-      \item Zusammenfassung
+      \item Fazit
     \end{enumerate}
   }
 
@@ -25,7 +25,7 @@
         \item JavaScripts \textbf{dynamische Typisierung} erschwert die Entwicklung korrekter, sicherer und wartbarer Anwendungen~\autocite{NIKHIL:2014,PRADEL:2015,BIERMAN:2014}
         \item Typ von Werten wird zur Laufzeit implizit umgewandelt (\textit{type coercion})
         \item Kritisches Laufzeitverhalten wird zum Teil ignoriert
-        \item aber: bessere Typsicherheit durch Einsatz eines\\\textbf{statischen Typsystems} möglich
+        \item aber: Erkennung von Programmfehlern durch Einsatz eines \textbf{statischen Typsystems} möglich
         \item Zwei Vertreter: \textit{Flow}~\autocite{FLOW:PAPER} und \textit{TypeScript}~\autocite{TYPESCRIPT:SPEC}
       \end{itemize}
     \end{frame}
@@ -64,7 +64,8 @@ linearSearch<string>(['foo', 'bar', 'baz'], 3);  // Typfehler
 
       \begin{lstlisting}[
         numbers=none,
-        emph={number,null,undefined}
+        basicstyle=\linespread{1.04}\normalsize\ttfamily,
+        emph={number,null,undefined},
       ]
 // Flow
 type MaybeNumber = ?number;
@@ -77,12 +78,10 @@ type MaybeNumber = number | null | undefined;
 
     \begin{frame}
       \frametitle{Ziele der Migration zu TypeScript}
-      \begin{enumerate}
-        \item Erkennung weiterer Typ- und Programmfehler
-        \item Unterstützung externer Bibliotheken
-        \item Performance der Typüberprüfungen
-        \item Zukunftssicherheit und Transparenz der Technologie
-      \end{enumerate}
+      \textbf{Z1}\hspace{0.75em}Erkennung weiterer Typ- und Programmfehler\\[.6em]
+      \textbf{Z2}\hspace{0.75em}Unterstützung externer Bibliotheken\\[.6em]
+      \textbf{Z3}\hspace{0.75em}Performance der Typüberprüfungen\\[.6em]
+      \textbf{Z4}\hspace{0.75em}Zukunftssicherheit und Transparenz der Technologie
     \end{frame}
 
   \section{Umsetzung}
@@ -90,13 +89,11 @@ type MaybeNumber = number | null | undefined;
 
     \begin{frame}
       \frametitle{Technische Anforderungen an den Transpiler}
-      \begin{enumerate}
-        \item Äquivalente und vollständige Übersetzung der Flow-Typen
-        \item Beibehaltung der Programmsemantik
-        \item Unterstützung aktueller und vorläufiger JavaScript- sowie JSX-Syntax
-        \item Verarbeitung gesamter Projektverzeichnisse
-        \item Beibehaltung der Quelltextformatierung
-      \end{enumerate}
+      \textbf{A1}\hspace{0.75em}Äquivalente und vollständige Übersetzung der Flow-Typen\\[.6em]
+      \textbf{A2}\hspace{0.75em}Beibehaltung der Programmsemantik\\[.6em]
+      \textbf{A3}\hspace{0.75em}Unterstützung aktueller und vorläufiger JavaScript- sowie\\\hspace{2.05em}JSX-Syntax\\[.6em]
+      \textbf{A4}\hspace{0.75em}Verarbeitung gesamter Projektverzeichnisse\\[.6em]
+      \textbf{A5}\hspace{0.75em}Beibehaltung der Quelltextformatierung
     \end{frame}
 
     \begin{frame}
@@ -104,9 +101,9 @@ type MaybeNumber = number | null | undefined;
       \begin{itemize}
         \item \textit{Babel}~\autocite{BABEL} als Grundlage der Implementierung
         \item Babel = Transpiler für JavaScript
-        \item unterstützt alle geforderten Syntaxarten
+        \item unterstützt anders als Alternativen alle\\geforderten Syntaxarten
         \item Erweiterung durch Plugins möglich
-        % \item Programmtransformation durch Manipulation des abstrakten Syntaxbaums (AST)
+        \item sehr ausgereiftes Projekt
       \end{itemize}
     \end{frame}
 
@@ -114,13 +111,13 @@ type MaybeNumber = number | null | undefined;
       \frametitle{Programmtransformation durch Babel}
       \begin{enumerate}
         \item Parsen des Eingabequelltexts\linebreak$\Rightarrow$ abstrakter Syntaxbaum (AST) des Programms
-        \item Programmtransformation durch Manipulation der AST-Knoten mittels \textit{Besucher-Entwurfsmuster}
+        \item \textbf{Programmtransformation} durch Manipulation der AST-Knoten mittels \textit{Besucher-Entwurfsmuster}
         \item Generierung des Ausgabequelltexts
       \end{enumerate}
     \end{frame}
 
     \begin{frame}[fragile]
-      \frametitle{Transformation des AST}
+      \frametitle{Transformation des AST -- Beispiel}
 
       \begin{columns}
         \begin{column}{.48\textwidth}
@@ -177,41 +174,83 @@ type Alias = mixed;
       \end{columns}
     \end{frame}
 
-    \begin{frame}
-      \frametitle{Spezialfälle}
-      TODO: Spezialfälle der Transformation
-    \end{frame}
+    % \begin{frame}
+    %   \frametitle{Spezialfälle}
+    %   TODO: Spezialfälle der Transformation
+    % \end{frame}
 
   \section{Ergebnisse}
     \secframe{3}{Ergebnisse und\\*\hspace{2.05em}Auswertung}
 
     \begin{frame}
       \frametitle{Durchführung der Migration}
-
+      \begin{itemize}
+        \item Zwei Projekte von Spreadshirt wurden mit Hilfe des Transpilers erfolgreich migriert
+        \item aber: daraufhin zahlreiche neue Typfehler
+        \item manuelle Korrektur dieser Fehler notwendig
+      \end{itemize}
     \end{frame}
 
+    \subsection{Ziele}
+      \begin{frame}
+        \LARGE\textbf{Erfüllung der Zielvorgaben}
+      \end{frame}
+
+      \begin{frame}
+        \frametitle{Z1~~Erkennung weiterer Typ- und Programmfehler}
+      \end{frame}
+
+      \begin{frame}
+        \frametitle{Z2~~Unterstützung externer Bibliotheken}
+      \end{frame}
+
+      \begin{frame}
+        \frametitle{Z3~~Performance der Typüberprüfungen}
+      \end{frame}
+
+      \begin{frame}
+        \frametitle{Z4~~Zukunftssicherheit und Transparenz}
+      \end{frame}
+
+    \subsection{Technische Anforderungen}
+      \begin{frame}
+        \LARGE\textbf{Erfüllung der technischen Anforderungen}
+      \end{frame}
+
+      \begin{frame}
+        \frametitle{A1~~Äquivalente und vollständige Übersetzungen}
+      \end{frame}
+
+      \begin{frame}
+        \frametitle{A2~~Beibehaltung der Programmsemantik}
+      \end{frame}
+
+      \begin{frame}
+        \frametitle{A3~~Unterstützung von JavaScript- und JSX-Syntax}
+      \end{frame}
+
+      \begin{frame}
+        \frametitle{A4~~Verarbeitung gesamter Projektverzeichnisse}
+      \end{frame}
+
+      \begin{frame}
+        \frametitle{A5~~Beibehaltung der Quelltextformatierung}
+      \end{frame}
+
+  \section{Fazit}
+    \secframe{4}{Fazit}
+
     \begin{frame}
-      \frametitle{Erkennung weiterer Typ- und Programmfehler}
+      \frametitle{Fazit}
 
-
-    \end{frame}
-
-    \begin{frame}
-      \frametitle{TODO}
-
-    \end{frame}
-
-  \section{Zusammenfassung}
-    \secframe{4}{Zusammenfassung}
-
-    \begin{frame}
-      \frametitle{TODO}
-
-    \end{frame}
-
-    \begin{frame}
-      \frametitle{TODO}
-
+      \begin{block}{Erfüllung der Ziele}
+        \begin{enumerate}
+          \item Erkennung weiterer Typ- und Programmfehler
+          \item Unterstützung externer Bibliotheken
+          \item Performance der Typüberprüfungen
+          \item Zukunftssicherheit und Transparenz der Technologie
+        \end{enumerate}
+      \end{block}
     \end{frame}
 
   \appendix

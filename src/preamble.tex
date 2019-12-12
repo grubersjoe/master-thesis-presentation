@@ -103,7 +103,7 @@
 }}
 
 \forestset{
-  font=\footnotesize,
+  font=\scriptsize,
   default preamble={
     for tree = {
       l=1.5cm,
@@ -114,7 +114,7 @@
       rectangle,
       rounded corners=2,
       fill=mlightgray,
-      font=\footnotesize,
+      font=\scriptsize,
     }
   }
 }
@@ -135,7 +135,7 @@
 \setbeamercolor{itemize subitem}{fg=black}
 \setbeamerfont{frametitle}{series=\bfseries,parent=structure}
 \setbeamertemplate{bibliography item}{\insertbiblabel}
-\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamertemplate{blocks}[default]
 \setbeamertemplate{enumerate items}[default]
 \setbeamertemplate{frametitle}[default][shadow=false]
 \setbeamertemplate{footline}[frame number]
@@ -143,6 +143,17 @@
 \setbeamertemplate{navigation symbols}{}
 \setbeamertemplate{title page}[default][rounded=true,shadow=false]
 \usecolortheme[named=pcolor]{structure}
+
+% Remove shadow from navigation bar
+\useoutertheme{smoothbars}
+\makeatletter
+\AtBeginDocument{
+\pgfdeclareverticalshading{beamer@barshade}{\the\paperwidth}{%
+    color(0ex)=(black);%
+    color(0.5ex)=(section in head/foot.bg);%
+    color(4ex)=(section in head/foot.bg)%
+  }
+}
 
 % Small font in bibliography
 \renewcommand*{\bibfont}{\small}
