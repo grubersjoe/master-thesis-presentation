@@ -159,46 +159,7 @@
 \renewcommand*{\bibfont}{\small}
 
 % Titlepage
-\makeatletter
-\setbeamertemplate{title page}
-{
-  \vfill
-  \begin{centering}
-    \setbeamercolor{title}{bg=white,fg=black}
-
-    \begin{beamercolorbox}[center]{author}
-      \usebeamerfont{author}\normalsize Masterkolloquium
-    \end{beamercolorbox}
-
-    \vspace{0.5cm}
-
-    \begin{beamercolorbox}[sep=8pt,center]{title}
-      \usebeamerfont{title}{\huge\textbf{Statische Typsysteme\\für JavaScript}}
-    \end{beamercolorbox}
-
-    \begin{beamercolorbox}[sep=6pt,center]{title}
-      \usebeamerfont{title}\large Entwicklung eines Transpilers zur\\Übersetzung von Flow nach TypeScript
-    \end{beamercolorbox}
-
-    \vspace{0.5cm}
-
-    \begin{beamercolorbox}[sep=3pt,center]{author}
-      \usebeamerfont{author}\normalsize\insertauthor
-    \end{beamercolorbox}
-
-    \begin{beamercolorbox}[sep=3pt,center]{institute}
-      \usebeamerfont{institute}{\normalsize\insertinstitute}
-    \end{beamercolorbox}
-
-    \vspace{0.5cm}
-
-    \begin{beamercolorbox}[sep=3pt,center]{date}
-      \usebeamerfont{date}{\normalsize\insertdate}
-    \end{beamercolorbox}
-  \end{centering}
-  \vfill
-}
-\makeatother
+\input{src/title.tex}
 
 \newcommand{\pie}[1]{%
 	\begin{tikzpicture}%
@@ -213,11 +174,15 @@
   }
 }
 
-\newcommand{\secframe}[2]{
+\newcommand{\secframe}[1]{
   {
     \setbeamercolor{background canvas}{bg=scolor}
     \begin{frame}[plain]
-      \Huge\color{white}\textbf{\circled{#1}\hspace{0.5em}#2}
+      \Huge\textbf{\circled{\thesection}\hspace{0.5em}\color{white}{#1}}
     \end{frame}
   }
+}
+
+\newcommand{\secframebr}{%
+  \\*\hspace{2.05em}%
 }

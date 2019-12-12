@@ -1,15 +1,16 @@
 \input{src/preamble.tex}
 
 \begin{document}
-  \frame[plain]{\titlepage}
+  \frame[plain,noframenumbering]{\titlepage}
 
-  \frame[plain]{
+  \frame[plain,noframenumbering]{
     \frametitle{}
     \LARGE{\textbf{Überblick}}
     \vspace{1em}
     \large
     \begin{enumerate}
       \item Problemstellung
+      \item Statische Typsysteme für JavaScript
       \item Umsetzung des Transpilers
       \item Ergebnisse und Auswertung
       \item Fazit
@@ -17,7 +18,7 @@
   }
 
   \section{Problemstellung}
-    \secframe{1}{Problemstellung}
+    \secframe{Problemstellung}
 
     \begin{frame}
       \frametitle{Motivation}
@@ -64,12 +65,11 @@ linearSearch<string>(['foo', 'bar', 'baz'], 3);  // Typfehler
 
       \begin{lstlisting}[
         numbers=none,
-        basicstyle=\linespread{1.04}\normalsize\ttfamily,
+        basicstyle=\linespread{1.04}\large\ttfamily,
         emph={number,null,undefined},
       ]
 // Flow
 type MaybeNumber = ?number;
-
 
 // TypeScript
 type MaybeNumber = number | null | undefined;
@@ -84,8 +84,36 @@ type MaybeNumber = number | null | undefined;
       \textbf{Z4}\hspace{0.75em}Zukunftssicherheit und Transparenz der Technologie
     \end{frame}
 
+  \section{Statische Typsysteme}
+  \secframe{Statische Typsysteme\secframebr für JavaScript}
+
+    \begin{frame}
+      \frametitle{Flow}
+      \begin{itemize}
+        \item ermöglicht Verwendung von Typannotationen in\\regulären JavaScript-Quelltexten
+        \item Typüberprüfung durch Server im Hintergrund
+        \item Fokus auf Korrektheit\footnote{engl. \textit{Soundness}} des Typsystems
+        \item globale Typinferenz durch pfadsensitive Datenflussanalyse
+        \item Typsystem größtenteils strukturell, z. T. nominal
+        \item Parallelisierung der Berechnung
+      \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+      \frametitle{TypeScript}
+      \begin{itemize}
+        \item vollständige Programmiersprache mit\\statischer Typisierung
+        \item Syntax ist strikte Obermenge von JavaScript
+        \item Typüberprüfung und Übersetzung nach JavaScript\\durch TypeScript-Compiler
+        \item \enquote{\textit{Balance zwischen Korrektheit und Produktivität}}~\autocite{TYPESCRIPT:DESIGN_GOALS}
+        \item Typinferenz nur lokal und teilweise kontextuell
+        \item Typsystem rein strukturell
+        \item graduelle Typisierung möglich
+      \end{itemize}
+    \end{frame}
+
   \section{Umsetzung}
-    \secframe{2}{Umsetzung}
+    \secframe{Umsetzung des\secframebr Transpilers}
 
     \begin{frame}
       \frametitle{Technische Anforderungen an den Transpiler}
@@ -99,25 +127,29 @@ type MaybeNumber = number | null | undefined;
     \begin{frame}
       \frametitle{Implementierung als Babel-Plugin}
       \begin{itemize}
-        \item \textit{Babel}~\autocite{BABEL} als Grundlage der Implementierung
+        \item \textit{Babel}~\autocite{BABEL} als Grundlage der Implementierung gewählt
         \item Babel = Transpiler für JavaScript
-        \item unterstützt anders als Alternativen alle\\geforderten Syntaxarten
-        \item Erweiterung durch Plugins möglich
+        \item unterstützt alle geforderten Arten von Syntax
+        \item gute Erweiterbarkeit durch Plugin-System
         \item sehr ausgereiftes Projekt
       \end{itemize}
     \end{frame}
 
     \begin{frame}
       \frametitle{Programmtransformation durch Babel}
+      \textbf{\large Grundkonzept}
+      \vspace{1em}
       \begin{enumerate}
-        \item Parsen des Eingabequelltexts\linebreak$\Rightarrow$ abstrakter Syntaxbaum (AST) des Programms
-        \item \textbf{Programmtransformation} durch Manipulation der AST-Knoten mittels \textit{Besucher-Entwurfsmuster}
+        \item Parsen des Eingabequelltexts\linebreak$\Rightarrow$ abstrakter Syntaxbaum (AST) des Programms\\
+        \smallskip
+        \item \textbf{Programmtransformation} durch Manipulation der AST-Knoten mittels \textit{Besucher-Entwurfsmuster}\\
+        \smallskip
         \item Generierung des Ausgabequelltexts
       \end{enumerate}
     \end{frame}
 
     \begin{frame}[fragile]
-      \frametitle{Transformation des AST -- Beispiel}
+      \frametitle{Transformation des abstrakten Syntaxbaums}
 
       \begin{columns}
         \begin{column}{.48\textwidth}
@@ -164,10 +196,10 @@ type Alias = mixed;
       \end{columns}
     \end{frame}
 
-    \begin{frame}[plain]
-      % \frametitle{Architektur}
+    \begin{frame}
+      \vspace{1mm}
       \begin{columns}
-        \column{\dimexpr\paperwidth-6mm}
+        \column{\dimexpr\paperwidth-8mm}
         \begin{figure}
           \includegraphics[width=\textwidth]{src/figures/architecture-overview.pdf}
         \end{figure}
@@ -180,65 +212,107 @@ type Alias = mixed;
     % \end{frame}
 
   \section{Ergebnisse}
-    \secframe{3}{Ergebnisse und\\*\hspace{2.05em}Auswertung}
+    \secframe{Ergebnisse und\secframebr Auswertung}
 
-    \begin{frame}
-      \frametitle{Durchführung der Migration}
-      \begin{itemize}
-        \item Zwei Projekte von Spreadshirt wurden mit Hilfe des Transpilers erfolgreich migriert
-        \item aber: daraufhin zahlreiche neue Typfehler
-        \item manuelle Korrektur dieser Fehler notwendig
-      \end{itemize}
-    \end{frame}
-
-    \subsection{Ziele}
-      \begin{frame}
-        \LARGE\textbf{Erfüllung der Zielvorgaben}
-      \end{frame}
-
-      \begin{frame}
-        \frametitle{Z1~~Erkennung weiterer Typ- und Programmfehler}
-      \end{frame}
-
-      \begin{frame}
-        \frametitle{Z2~~Unterstützung externer Bibliotheken}
-      \end{frame}
-
-      \begin{frame}
-        \frametitle{Z3~~Performance der Typüberprüfungen}
-      \end{frame}
-
-      \begin{frame}
-        \frametitle{Z4~~Zukunftssicherheit und Transparenz}
-      \end{frame}
+    % \begin{frame}
+    %   \frametitle{Durchführung der Migration}
+    %   \begin{itemize}
+    %     \item Zwei Projekte von Spreadshirt wurden mit Hilfe des Transpilers erfolgreich migriert
+    %     \item aber: daraufhin zahlreiche neue Typfehler
+    %     \item manuelle Korrektur dieser Fehler notwendig
+    %   \end{itemize}
+    % \end{frame}
 
     \subsection{Technische Anforderungen}
+      % \begin{frame}
+      %   \LARGE\textbf{Erfüllung der technischen Anforderungen}
+      % \end{frame}
+
       \begin{frame}
-        \LARGE\textbf{Erfüllung der technischen Anforderungen}
+        \frametitle{A1\hspace{0.75em}Äquivalenz und Vollständigkeit der Transf. (1)}
+        \begin{block}{Äquivalenz der Übersetzungen}
+          \begin{itemize}
+            \item wurde größtenteils erzielt
+            \item aber: einzelne Funktionen von Flow werden in TypeScript nicht unterstützt\\
+              \smallskip
+              $\Rightarrow$ Verlust von Typinformation
+            \item für 3 der 17 Hilfstypen von Flow konnte kein äquivalenter TypeScript-Ausdruck gefunden werden\\
+              \smallskip
+              $\Rightarrow$ Ersetzung mit \textit{any}
+          \end{itemize}
+        \end{block}
       \end{frame}
 
       \begin{frame}
-        \frametitle{A1~~Äquivalente und vollständige Übersetzungen}
+        \frametitle{A1\hspace{0.75em}Äquivalenz und Vollständigkeit der Transf. (2)}
+        \begin{block}{Vollständigkeit der Transformationen}
+          \begin{itemize}
+            \item wurde erzielt
+            \item Umfang der \textit{Vollständigkeit} durch AST-Spezifikation~\autocite{BABEL:PARSER_SPEC} von Babel präzise eingegrenzt
+            \item Verifizierung durch 1022 Fixture-Tests, die alle Funktionen von Flow abbilden
+            \item außerdem: Überprüfung der Implementierung durch statische Typisierung von Babel
+          \end{itemize}
+        \end{block}
       \end{frame}
 
       \begin{frame}
-        \frametitle{A2~~Beibehaltung der Programmsemantik}
+        \frametitle{A2\hspace{0.75em}Beibehaltung der Programmsemantik}
+          \begin{itemize}
+            \item Voraussetzung: Transpiler adressiert lediglich Flow-Typen und hat keine unbeabsichtigte Nebenwirkung
+            \item Verifizierung durch Fixture-Tests
+            \item Überprüfung der Beibehaltung der Semantik durch 373 bzw. 326 Modultests der migrierten Projekte\\
+              \smallskip
+              $\Rightarrow$ keine Fehler
+            \item aber: Testabdeckung bei 90,5\% bzw. lediglich 18,0\%
+            \item Erfüllung der Anforderung wird angenommen
+          \end{itemize}
       \end{frame}
 
       \begin{frame}
-        \frametitle{A3~~Unterstützung von JavaScript- und JSX-Syntax}
+        \frametitle{A3\hspace{0.75em}Unterstützung von JavaScript- und JSX-Syntax}
       \end{frame}
 
       \begin{frame}
-        \frametitle{A4~~Verarbeitung gesamter Projektverzeichnisse}
+        \frametitle{A4\hspace{0.75em}Verarbeitung gesamter Projektverzeichnisse}
       \end{frame}
 
       \begin{frame}
-        \frametitle{A5~~Beibehaltung der Quelltextformatierung}
+        \frametitle{A5\hspace{0.75em}Beibehaltung der Quelltextformatierung}
+        \begin{itemize}
+          \item ursprüngliche Quelltextformatierung geht durch Transpilierung verloren
+          \item deshalb: Formatierungsroutine auf Basis von\\\textit{Prettier}~\autocite{SOFTWARE:PRETTIER} implementiert
+          \item Manuelle Überprüfung der originalgetreuen\\Formatierung der Ausgabe in zwei Projekten:\\
+            \medskip
+            \hspace{1em}Projekt A:~~3,5\% Fehlerrate\\
+            \smallskip
+            \hspace{1em}Projekt B:~~5,9\% Fehlerrate
+          \item Somit: vereinzelt fehlerhafte Formatierung, aber insgesamt zu 95,3\% korrekt
+        \end{itemize}
+      \end{frame}
+
+    \subsection{Ziele}
+      % \begin{frame}
+      %   \LARGE\textbf{Erfüllung der Zielvorgaben}
+      % \end{frame}
+
+      \begin{frame}
+        \frametitle{Z1\hspace{0.75em}Erkennung weiterer Typ- und Programmfehler}
+      \end{frame}
+
+      \begin{frame}
+        \frametitle{Z2\hspace{0.75em}Unterstützung externer Bibliotheken}
+      \end{frame}
+
+      \begin{frame}
+        \frametitle{Z3\hspace{0.75em}Performance der Typüberprüfungen}
+      \end{frame}
+
+      \begin{frame}
+        \frametitle{Z4\hspace{0.75em}Zukunftssicherheit und Transparenz}
       \end{frame}
 
   \section{Fazit}
-    \secframe{4}{Fazit}
+    \secframe{Fazit}
 
     \begin{frame}
       \frametitle{Fazit}
@@ -259,7 +333,7 @@ type Alias = mixed;
       % empty
     \end{frame}
 
-  \section{Anhang}
+  \section{Backup}
     \setbeamertemplate{footline}{}
 
     \begin{frame}[noframenumbering]
@@ -267,9 +341,19 @@ type Alias = mixed;
       \input{src/tables/tools.tex}
     \end{frame}
 
-    \frame[allowframebreaks,noframenumbering,plain] {
+    \begin{frame}
+      \frametitle{Nicht äquivalent übersetzbare Flow-Funktionen}
+      \begin{itemize}
+        \item \textit{Existential type}
+        \item Beliebige Typen in Index-Signaturen von Objekttypen
+        \item \textit{Opaque type}
+        \item Expliziter Rückgabewert von Konstruktoren
+        \item Varianz\footnote{TypeScript unterstützt nur Kovarianz}
+      \end{itemize}
+    \end{frame}
+
+    \begin{frame}[plain,allowframebreaks,noframenumbering]
       \frametitle{Quellenverzeichnis}
       \printbibliography
-    }
-
+    \end{frame}
 \end{document}
