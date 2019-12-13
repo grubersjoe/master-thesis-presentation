@@ -137,7 +137,7 @@ type MaybeNumber = number | null | undefined;
     \begin{frame}
       \frametitle{Implementierung als Babel-Plugin}
       \begin{itemize}
-        \item \textit{Babel}~\autocite{BABEL} als Grundlage der Implementierung gewählt
+        \item \textit{Babel}~\autocite{BABEL} als Grundlage der Implementierung
         \item Babel = Transpiler für JavaScript
         \item unterstützt alle geforderten Arten von Syntax
         \item gute Erweiterbarkeit durch Plugin-System
@@ -226,10 +226,9 @@ type Alias = mixed;
             numbers=none,
           ]
 // Flow                               // TypeScript
-type MaybeNumber = ?number;           type MaybeNumber =
-                                        number | null | undefined;
 
 type MaybeNull = ?null;               type MaybeNull = null | undefined;
+                                      // (vs. null | null | undefined)
 
 type FunctionType =                   type FunctionType =
   (string, arg: number) => mixed;       (p1: string, arg: number) => unknown;
@@ -265,11 +264,11 @@ class C {                             class C
       \begin{frame}
         \frametitle{A1\hspace{0.75em}Äquivalenz der Typ-Übersetzungen (1)}
         \begin{itemize}
-          \item wurde nahezu vollständig erzielt
+          \item nahezu vollständig erzielt
           \item aber: einzelne Funktionen von Flow werden in TypeScript nicht unterstützt\\
             \smallskip
             $\Rightarrow$ Verlust von Typinformation hier unvermeidbar
-          \item für 3 der 17 Hilfstypen von Flow konnte kein äquivalenter TypeScript-Ausdruck gefunden werden\\
+          \item keine äquivalente TypeScript-Audrücke für 3 der 17 Hilfstypen von Flow gefunden\\
             \smallskip
             $\Rightarrow$ Ersetzung mit Typ \textit{any}
         \end{itemize}
@@ -285,7 +284,7 @@ class C {                             class C
 Transpiling example.js...
 
   1 | // @flow
-> 2 | const existentialType: * = someFunction();
+> 2 | const existentialType: * = f();
     |                       ^
   Warning:
     Flow's Existential Type (*) is not expressible in TypeScript.
@@ -300,8 +299,8 @@ Transpiling example.js...
         \frametitle{A1\hspace{0.75em}Vollständigkeit der Transformationen}
         \begin{itemize}
           \item wurde erzielt
-          \item Umfang der \textit{Vollständigkeit} durch AST-Spezifikation~\autocite{BABEL:PARSER_SPEC} von Babel präzise eingegrenzt
-          \item Verifizierung durch 1022 Fixture-Tests, die alle Funktionen von Flow abbilden
+          \item \textit{Vollständigkeit} durch AST-Spezifikation~\autocite{BABEL:PARSER_SPEC} von Babel präzise eingegrenzt
+          \item Verifizierung durch 1022 Fixture-Tests\\(testgetriebene Entwicklung)
           \item außerdem: statische Überprüfung der Implementierung durch Typisierung von Babel
         \end{itemize}
       \end{frame}
@@ -309,13 +308,13 @@ Transpiling example.js...
       \begin{frame}
         \frametitle{A2\hspace{0.75em}Beibehaltung der Programmsemantik}
           \begin{itemize}
-            \item Voraussetzung: Transpiler adressiert lediglich Flow-Typen und hat keine unbeabsichtigte Nebenwirkung
+            \item Voraussetzung: Transpiler adressiert lediglich Flow-Typen ohne unbeabsichtigte Nebenwirkung
             \item Verifizierung dieser Bedingung durch Fixture-Tests
             \item Überprüfung der Beibehaltung der Semantik durch 373 bzw. 326 Modultests der migrierten Projekte\\
               \smallskip
               $\Rightarrow$ keine Fehler, Anforderung scheint somit erfüllt
             \item aber: Testabdeckung bei 90,5\% bzw. lediglich 18,0\%
-            \item \textbf{Nachtrag:} ein semantischer Fehler bei Umformung von Klassendekoratoren wurde inzwischen erkannt
+            \item \textbf{Nachtrag:} ein semantischer Fehler bei Umformung von Klassendekoratoren inzwischen erkannt
           \end{itemize}
       \end{frame}
 
@@ -323,7 +322,7 @@ Transpiling example.js...
         \frametitle{A3\hspace{0.75em}Unterstützung von JavaScript- und JSX-Syntax}
         \begin{itemize}
           \item Babel wurde gewählt zur Erfüllung dieser Anforderung
-          \item Unterstützung für vorläufige JavaScript und JSX-Syntax durch entsprechende gegebene Babel-Plugins
+          \item Unterstützung für vorläufige JavaScript und JSX-Syntax durch entsprechende Babel-Plugins
           \item Anforderung damit erfüllt
         \end{itemize}
       \end{frame}
@@ -331,7 +330,7 @@ Transpiling example.js...
       \begin{frame}[fragile]
         \frametitle{A4\hspace{0.75em}Verarbeitung gesamter Projektverzeichnisse}
         \begin{itemize}
-          \item Umgesetztes Kommandozeilenprogramm ermöglicht Verarbeitung ganzer Verzeichnisse (und von Einzeldateien)
+          \item Umgesetztes Kommandozeilenprogramm ermöglicht Verarbeitung von Verzeichnissen (und von Einzeldateien)
           \item Flexible Ein- und Ausgrenzung von Eingabedateien durch Wildcard-Muster (\textit{glob patterns})
           \item Ausgabemodus durch Option steuerbar\\(Standardausgabe, Datei schreiben bzw. Original ersetzen)
         \end{itemize}
@@ -350,7 +349,7 @@ reflow \
         \begin{itemize}
           \item ursprüngliche Quelltextformatierung geht durch AST-Transformation verloren
           \item deshalb: Formatierungsroutine auf Basis von\\\textit{Prettier}~\autocite{SOFTWARE:PRETTIER} implementiert
-          \item Manuelle Überprüfung der originalgetreuen\\Formatierung der Ausgabe in zwei Projekten:\\
+          \item Manuelle Überprüfung der korrekten Formatierung\\der Ausgabe in zwei Projekten:\\
             \medskip
             {
               \footnotesize
@@ -359,7 +358,7 @@ reflow \
                 Helios     & 5,9\% Fehlerrate \\
               \end{tabu}
             }
-          \item Somit: vereinzelt Fehler, aber korrekte\\Formatierung in 95,3\% der Fälle
+          \item Somit: vereinzelt Fehler, aber originalgetreue\\Formatierung in 95,3\% der Fälle
         \end{itemize}
       \end{frame}
 
@@ -370,11 +369,35 @@ reflow \
 
       \begin{frame}
         \frametitle{Z1\hspace{0.75em}Erkennung weiterer Typ- und Programmfehler}
+
+        TODO: Tabelle mit Top 5 der neu erkannten Fehler oder so\\
+
+        Großteil der neu aufgetrenen Typfehler stellt keine Programmfehler dar.
+      \end{frame}
+
+      \begin{frame}
+        \frametitle{Z1\hspace{0.75em}Erkennung weiterer Typ- und Programmfehler}
+
+        \begin{block}{Ursachen neu aufgetrener Typfehler}
+          \begin{itemize}
+            \item Prinzipielle Unterschiede von Flow und TypeScript
+            \item Integration externer Typdefinitionen
+            \item Unzulänglichkeiten der vorherigen Flow-Typisierung
+          \end{itemize}
+        \end{block}
+
+        \begin{block}{Von TypeScript aufgedeckte Programmfehler}
+          \begin{itemize}
+            \item Zusätzliche Objektattribute bei Funktionsargumenten
+            \item Fehlerhafte Verwendung von React-Komponenten
+            \item Falscher Argumenttyp bei Funktionsaufrufen
+          \end{itemize}
+        \end{block}
       \end{frame}
 
       \begin{frame}
         \frametitle{Z2\hspace{0.75em}Unterstützung externer Bibliotheken (1)}
-        Zwei Projekte pflegen Typdefinitionen für JavaScript-Bibliotheken:\\[1.5em]
+        Zwei Projekte stellen Typdefinitionen für JavaScript-Bibliotheken bereit:\\[1.5em]
         {
           \footnotesize
           \begin{tabu} to \textwidth {@{}lrrrrl@{}}
@@ -392,7 +415,7 @@ reflow \
 
       \begin{frame}
         \frametitle{Z2\hspace{0.75em}Unterstützung externer Bibliotheken (2)}
-        Untersuchung der am 15 häufigsten eingesetzten Bibliotheken in migrierten Projekten von Spreadshirt:\\[1.5em]
+        Untersuchung der am 15 häufigsten eingesetzten\\Bibliotheken in migrierten Projekten von Spreadshirt:\\[1.5em]
 
         {
           \footnotesize
@@ -440,18 +463,16 @@ reflow \
           \item Problem: Verunsicherung bezüglich der Zukunft von Flow
           \item Kommunikation laut eigener Aussage zuletzt ungenügend~\autocite{FLOW:UPDATE_2019}
           \item nur bei TypeScript existiert ein öffentlich einsehbarer Projektplan (\textit{Roadmap})
-          \item Untersuchung wie schnell Fehlerberichte (\textit{Issues}) auf GitHub jeweils im Median geschlossen wurden:\\
-            \medskip
+          \item Untersuchung wie schnell Fehlerberichte (\textit{Issues}) auf GitHub im Median jeweils geschlossen wurden:\\
+            \vspace{.5em}
             {
               \footnotesize
               \begin{tabu}{@{}lrr@{}}
-                \midrule
                 Flow & 11,6 Tage & 3.800 Einträge \\
                 TypeScript & 6,6 Tage & 20.000 Einträge \\
-                \midrule
               \end{tabu}
             }
-          \item Fazit: Mehr Planungssicherheit bei TypeScript und Fehlerberichte werden schneller bearbeitet
+          \item Fazit: Entwicklung von TypeScript\\tatsächlich transparenter
         \end{itemize}
       \end{frame}
 
@@ -488,6 +509,11 @@ reflow \
     \begin{frame}[noframenumbering]
       \frametitle{Evaluation bestehender Werkzeuge}
       \input{src/tables/tools.tex}
+    \end{frame}
+
+    \begin{frame}[noframenumbering]
+      \frametitle{Formatierungsroutine}
+      TODO: Abbildung von Formatierung
     \end{frame}
 
     \begin{frame}[noframenumbering]
@@ -539,6 +565,16 @@ reflow \
         \textbf{System D}\\
           Intel Core i7-6700 Prozessor mit 3,4~GHz und 8~Rechenkernen (2015), 32~GB Arbeitsspeicher, Solid State Drive, Debian Linux
       }
+    \end{frame}
+
+    \begin{frame}[noframenumbering]
+      \frametitle{Testsysteme}
+      TODO: Messdaten Complete
+    \end{frame}
+
+    \begin{frame}[noframenumbering]
+      \frametitle{Testsysteme}
+      TODO: Messdaten Cores
     \end{frame}
 
     \begin{frame}[plain,allowframebreaks,noframenumbering]
