@@ -276,7 +276,7 @@ class C {                             class C
       \end{frame}
 
       \begin{frame}[fragile]
-        \frametitle{A1\hspace{0.75em}Äquivalenz der Typ-Übersetzungen (1)}
+        \frametitle{A1\hspace{0.75em}Äquivalenz der Typ-Übersetzungen (2)}
         \begin{columns}
           \column{\dimexpr\paperwidth-16mm}
           \textbf{Warnung bei Transformationen mit Typverlust}
@@ -297,7 +297,7 @@ Transpiling example.js...
       \end{frame}
 
       \begin{frame}
-        \frametitle{A1\hspace{0.75em}Vollständigkeit der Transformationen (2)}
+        \frametitle{A1\hspace{0.75em}Vollständigkeit der Transformationen}
         \begin{itemize}
           \item wurde erzielt
           \item Umfang der \textit{Vollständigkeit} durch AST-Spezifikation~\autocite{BABEL:PARSER_SPEC} von Babel präzise eingegrenzt
@@ -352,10 +352,14 @@ reflow \
           \item deshalb: Formatierungsroutine auf Basis von\\\textit{Prettier}~\autocite{SOFTWARE:PRETTIER} implementiert
           \item Manuelle Überprüfung der originalgetreuen\\Formatierung der Ausgabe in zwei Projekten:\\
             \medskip
-            \hspace{1em}Projekt A:~~3,5\% Fehlerrate\\
-            \smallskip
-            \hspace{1em}Projekt B:~~5,9\% Fehlerrate
-          \item Somit: vereinzelt fehlerhafte Formatierung, aber insgesamt zu 95,3\% akkurat
+            {
+              \footnotesize
+              \begin{tabu} to \textwidth {@{}lr@{}}
+                Components & 3,5\% Fehlerrate \\
+                Helios     & 5,9\% Fehlerrate \\
+              \end{tabu}
+            }
+          \item Somit: vereinzelt Fehler, aber korrekte\\Formatierung in 95,3\% der Fälle
         \end{itemize}
       \end{frame}
 
@@ -411,7 +415,23 @@ reflow \
       \end{frame}
 
       \begin{frame}
-        \frametitle{Z3\hspace{0.75em}Performance der Typüberprüfungen}
+        \frametitle{Z3\hspace{0.75em}Performance -- Vollständige Typüberprüfung (1)}
+        \input{src/plots/complete/components-plot.tex}
+      \end{frame}
+
+      \begin{frame}
+        \frametitle{Z3\hspace{0.75em}Performance -- Vollständige Typüberprüfung (2)}
+        \input{src/plots/complete/helios-plot.tex}
+      \end{frame}
+
+      \begin{frame}
+        \frametitle{Z3\hspace{0.75em}Performance -- Einfluss der Parallelisierung (1)}
+        \input{src/plots/cores/components-plot.tex}
+      \end{frame}
+
+      \begin{frame}
+        \frametitle{Z3\hspace{0.75em}Performance -- Einfluss der Parallelisierung (2)}
+        \input{src/plots/cores/helios-plot.tex}
       \end{frame}
 
       \begin{frame}
@@ -431,7 +451,7 @@ reflow \
                 \midrule
               \end{tabu}
             }
-          \item Fazit: Mehr Planungssicherheit bei TypeScript,\\Fehlerberichte werden schneller bearbeitet
+          \item Fazit: Mehr Planungssicherheit bei TypeScript und Fehlerberichte werden schneller bearbeitet
         \end{itemize}
       \end{frame}
 
@@ -470,7 +490,7 @@ reflow \
       \input{src/tables/tools.tex}
     \end{frame}
 
-    \begin{frame}
+    \begin{frame}[noframenumbering]
       \frametitle{Nicht äquivalent übersetzbare Flow-Funktionen}
       \begin{itemize}
         \item \textit{Existential type}
@@ -481,7 +501,7 @@ reflow \
       \end{itemize}
     \end{frame}
 
-    \begin{frame}
+    \begin{frame}[noframenumbering]
       \frametitle{Unterstützung von Bibliotheken (Top 12) }
       {
         \footnotesize
@@ -503,6 +523,21 @@ reflow \
           react-motion      &   0.5 &                        ---  &  0.29~~~~~~\code{\small E} \\
           \midrule
         \end{tabu}
+      }
+    \end{frame}
+
+    \begin{frame}[noframenumbering]
+      \frametitle{Testsysteme}
+      {
+        \footnotesize
+        \textbf{System A}\\
+          AMD Phenom II X6 1055T Prozessor mit 2,9~GHz\footnote{Jeweils Grundtakt des Prozessors} und 6~Rechenkernen (2010), 16~GB Arbeitsspeicher, Solid State Drive, Arch Linux\\[1em]
+        \textbf{System B}\\
+          Intel Core i5-4258U Prozessor mit 2,4~GHz und 4~Rechenkernen (2013), 8~GB Arbeitsspeicher, Solid State Drive, Arch Linux\\[1em]
+        \textbf{System C}\\
+          Intel Core i5-4210M Prozessor mit 2,6~GHz und 4~Rechenkernen (2014), 16~GB Arbeitsspeicher, Solid State Drive, Arch Linux\\[1em]
+        \textbf{System D}\\
+          Intel Core i7-6700 Prozessor mit 3,4~GHz und 8~Rechenkernen (2015), 32~GB Arbeitsspeicher, Solid State Drive, Debian Linux
       }
     \end{frame}
 
