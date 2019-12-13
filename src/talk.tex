@@ -5,15 +5,15 @@
 
   \frame[plain,noframenumbering]{
     \frametitle{}
-    \LARGE{\textbf{Überblick}}
-    \vspace{1em}
+    \textbf{\LARGE Überblick}
+    \bigskip
     \large
     \begin{enumerate}
       \item Problemstellung
       \item Statische Typsysteme für JavaScript
       \item Umsetzung des Transpilers
       \item Ergebnisse und Auswertung
-      \item Fazit
+      \item Zusammenfassung
     \end{enumerate}
   }
 
@@ -56,7 +56,7 @@ linearSearch<string>(['foo', 'bar', 'baz'], 3);  // Typfehler
         \item Ziel: Migration bestehender Flow"=Projekte nach TypeScript
         \item Händische Migration fehleranfällig und zeitaufwändig
         \item Lösung: Entwicklung eines \textbf{Transpilers} zur Übersetzung der Flow-Typisierung nach TypeScript
-        \item Transpiler = Compiler, der Quelltext einer Programmier"=sprache in eine andere übersetzt
+        \item Transpiler = Compiler, der Quelltext einer Programmier"=sprache in andere übersetzt
       \end{itemize}
     }
 
@@ -70,6 +70,7 @@ linearSearch<string>(['foo', 'bar', 'baz'], 3);  // Typfehler
       ]
 // Flow
 type MaybeNumber = ?number;
+
 
 // TypeScript
 type MaybeNumber = number | null | undefined;
@@ -90,12 +91,12 @@ type MaybeNumber = number | null | undefined;
     \begin{frame}
       \frametitle{Flow}
       \begin{itemize}
-        \item ermöglicht Verwendung von Typannotationen in\\regulären JavaScript-Quelltexten
+        \item ermöglicht Verwendung von Typannotationen in\\ regulären JavaScript-Quelltexten
         \item Typüberprüfung durch Server im Hintergrund
         \item Fokus auf Korrektheit\footnote{engl. \textit{Soundness}} des Typsystems
         \item globale Typinferenz durch pfadsensitive Datenflussanalyse
         \item Typsystem größtenteils strukturell, z. T. nominal
-        \item Parallelisierung der Berechnung
+        \item Parallelisierung der Typüberprüfung
       \end{itemize}
     \end{frame}
 
@@ -119,10 +120,19 @@ type MaybeNumber = number | null | undefined;
       \frametitle{Technische Anforderungen an den Transpiler}
       \textbf{A1}\hspace{0.75em}Äquivalente und vollständige Übersetzung der Flow-Typen\\[.6em]
       \textbf{A2}\hspace{0.75em}Beibehaltung der Programmsemantik\\[.6em]
-      \textbf{A3}\hspace{0.75em}Unterstützung aktueller und vorläufiger JavaScript- sowie\\\hspace{2.05em}JSX-Syntax\\[.6em]
+      \textbf{A3}\hspace{0.75em}Unterstützung aktueller und vorläufiger\footnote{gemeint sind \textit{ECMAScript proposals}~\autocite{ES_PROPOSALS}} JavaScript-\secframebr sowie JSX-Syntax (React)\\[.6em]
       \textbf{A4}\hspace{0.75em}Verarbeitung gesamter Projektverzeichnisse\\[.6em]
-      \textbf{A5}\hspace{0.75em}Beibehaltung der Quelltextformatierung
+      \textbf{A5}\hspace{0.75em}Originalgetreue Formatierung der Ausgabe
     \end{frame}
+
+    % \begin{frame}
+    %   \frametitle{Überblick über Umfang der Transformationen}
+    %   \begin{itemize}
+    %     \item 30 Basistypen
+    %     \item 17 Hilfstypen
+    %     \item Diverse Typdeklarationen
+    %   \end{itemize}
+    % \end{frame}
 
     \begin{frame}
       \frametitle{Implementierung als Babel-Plugin}
@@ -138,23 +148,24 @@ type MaybeNumber = number | null | undefined;
     \begin{frame}
       \frametitle{Programmtransformation durch Babel}
       \textbf{\large Grundkonzept}
-      \vspace{1em}
+      \bigskip
       \begin{enumerate}
-        \item Parsen des Eingabequelltexts\linebreak$\Rightarrow$ abstrakter Syntaxbaum (AST) des Programms\\
+        \item Parsen des Eingabequelltexts\\
+          $\Rightarrow$ erzeugt abstrakten Syntaxbaum (AST) des Programms\\
         \smallskip
-        \item \textbf{Programmtransformation} durch Manipulation der AST-Knoten mittels \textit{Besucher-Entwurfsmuster}\\
+        \item Programmtransformation durch Manipulation der AST-Knoten mittels \textit{Besucher-Entwurfsmuster}\\
         \smallskip
         \item Generierung des Ausgabequelltexts
       \end{enumerate}
     \end{frame}
 
     \begin{frame}[fragile]
-      \frametitle{Transformation des abstrakten Syntaxbaums}
+      \frametitle{Beispiel -- Transformation des AST}
 
       \begin{columns}
         \begin{column}{.48\textwidth}
           \begin{lstlisting}[numbers=none]
-// @flow
+// Flow
 type Alias = mixed;
           \end{lstlisting}
           \vspace{5mm}
@@ -182,7 +193,7 @@ type Alias = mixed;
           \vspace{5mm}
           \ttfamily
           \begin{forest}
-            for tree = {l=1.6cm, s sep=0.5cm}
+            for tree = {l=1.6cm, s sep=0.75cm}
             [Program
               [TSTypeAliasDeclaration, edge label={node[edge]{body}}
                 [Identifier, edge label={node[edge]{id}}
@@ -206,10 +217,33 @@ type Alias = mixed;
       \end{columns}
     \end{frame}
 
-    % \begin{frame}
-    %   \frametitle{Spezialfälle}
-    %   TODO: Spezialfälle der Transformation
-    % \end{frame}
+    \begin{frame}[fragile]
+      \frametitle{Spezialfälle (Auswahl)}
+      \begin{columns}
+        \column{\dimexpr\paperwidth-11mm}
+          \begin{lstlisting}[
+            basicstyle=\linespread{1.04}\footnotesize\ttfamily,
+            numbers=none,
+          ]
+// Flow                               // TypeScript
+type MaybeNumber = ?number;           type MaybeNumber =
+                                        number | null | undefined;
+
+type MaybeNull = ?null;               type MaybeNull = null | undefined;
+
+type FunctionType =                   type FunctionType =
+  (string, arg: number) => mixed;       (p1: string, arg: number) => unknown;
+
+function f(opt?: number = 10) {}      function f(opt: number = 10) {}
+
+class C {                             class C
+  constructor(): Date {                 constructor() {
+    return new Date();                    return new Date();
+  }                                     }
+}                                     }
+        \end{lstlisting}
+      \end{columns}
+    \end{frame}
 
   \section{Ergebnisse}
     \secframe{Ergebnisse und\secframebr Auswertung}
@@ -229,64 +263,99 @@ type Alias = mixed;
       % \end{frame}
 
       \begin{frame}
-        \frametitle{A1\hspace{0.75em}Äquivalenz und Vollständigkeit der Transf. (1)}
-        \begin{block}{Äquivalenz der Übersetzungen}
-          \begin{itemize}
-            \item wurde größtenteils erzielt
-            \item aber: einzelne Funktionen von Flow werden in TypeScript nicht unterstützt\\
-              \smallskip
-              $\Rightarrow$ Verlust von Typinformation
-            \item für 3 der 17 Hilfstypen von Flow konnte kein äquivalenter TypeScript-Ausdruck gefunden werden\\
-              \smallskip
-              $\Rightarrow$ Ersetzung mit \textit{any}
-          \end{itemize}
-        \end{block}
+        \frametitle{A1\hspace{0.75em}Äquivalenz der Typ-Übersetzungen (1)}
+        \begin{itemize}
+          \item wurde nahezu vollständig erzielt
+          \item aber: einzelne Funktionen von Flow werden in TypeScript nicht unterstützt\\
+            \smallskip
+            $\Rightarrow$ Verlust von Typinformation hier unvermeidbar
+          \item für 3 der 17 Hilfstypen von Flow konnte kein äquivalenter TypeScript-Ausdruck gefunden werden\\
+            \smallskip
+            $\Rightarrow$ Ersetzung mit Typ \textit{any}
+        \end{itemize}
+      \end{frame}
+
+      \begin{frame}[fragile]
+        \frametitle{A1\hspace{0.75em}Äquivalenz der Typ-Übersetzungen (1)}
+        \begin{columns}
+          \column{\dimexpr\paperwidth-16mm}
+          \textbf{Warnung bei Transformationen mit Typverlust}
+          \vspace{1.5em}
+          \begin{lstlisting}[emph={Warning},numbers=none]
+Transpiling example.js...
+
+  1 | // @flow
+> 2 | const existentialType: * = someFunction();
+    |                       ^
+  Warning:
+    Flow's Existential Type (*) is not expressible in TypeScript.
+    Therefore, it will be replaced with 'any'.
+    See https://github.com/Microsoft/TypeScript/issues/14466.
+            \end{lstlisting}
+        \end{columns}
+
       \end{frame}
 
       \begin{frame}
-        \frametitle{A1\hspace{0.75em}Äquivalenz und Vollständigkeit der Transf. (2)}
-        \begin{block}{Vollständigkeit der Transformationen}
-          \begin{itemize}
-            \item wurde erzielt
-            \item Umfang der \textit{Vollständigkeit} durch AST-Spezifikation~\autocite{BABEL:PARSER_SPEC} von Babel präzise eingegrenzt
-            \item Verifizierung durch 1022 Fixture-Tests, die alle Funktionen von Flow abbilden
-            \item außerdem: Überprüfung der Implementierung durch statische Typisierung von Babel
-          \end{itemize}
-        \end{block}
+        \frametitle{A1\hspace{0.75em}Vollständigkeit der Transformationen (2)}
+        \begin{itemize}
+          \item wurde erzielt
+          \item Umfang der \textit{Vollständigkeit} durch AST-Spezifikation~\autocite{BABEL:PARSER_SPEC} von Babel präzise eingegrenzt
+          \item Verifizierung durch 1022 Fixture-Tests, die alle Funktionen von Flow abbilden
+          \item außerdem: statische Überprüfung der Implementierung durch Typisierung von Babel
+        \end{itemize}
       \end{frame}
 
       \begin{frame}
         \frametitle{A2\hspace{0.75em}Beibehaltung der Programmsemantik}
           \begin{itemize}
             \item Voraussetzung: Transpiler adressiert lediglich Flow-Typen und hat keine unbeabsichtigte Nebenwirkung
-            \item Verifizierung durch Fixture-Tests
+            \item Verifizierung dieser Bedingung durch Fixture-Tests
             \item Überprüfung der Beibehaltung der Semantik durch 373 bzw. 326 Modultests der migrierten Projekte\\
               \smallskip
-              $\Rightarrow$ keine Fehler
+              $\Rightarrow$ keine Fehler, Anforderung scheint somit erfüllt
             \item aber: Testabdeckung bei 90,5\% bzw. lediglich 18,0\%
-            \item Erfüllung der Anforderung wird angenommen
+            \item \textbf{Nachtrag:} ein semantischer Fehler bei Umformung von Klassendekoratoren wurde inzwischen erkannt
           \end{itemize}
       \end{frame}
 
       \begin{frame}
         \frametitle{A3\hspace{0.75em}Unterstützung von JavaScript- und JSX-Syntax}
-      \end{frame}
-
-      \begin{frame}
-        \frametitle{A4\hspace{0.75em}Verarbeitung gesamter Projektverzeichnisse}
-      \end{frame}
-
-      \begin{frame}
-        \frametitle{A5\hspace{0.75em}Beibehaltung der Quelltextformatierung}
         \begin{itemize}
-          \item ursprüngliche Quelltextformatierung geht durch Transpilierung verloren
+          \item Babel wurde gewählt zur Erfüllung dieser Anforderung
+          \item Unterstützung für vorläufige JavaScript und JSX-Syntax durch entsprechende gegebene Babel-Plugins
+          \item Anforderung damit erfüllt
+        \end{itemize}
+      \end{frame}
+
+      \begin{frame}[fragile]
+        \frametitle{A4\hspace{0.75em}Verarbeitung gesamter Projektverzeichnisse}
+        \begin{itemize}
+          \item Umgesetztes Kommandozeilenprogramm ermöglicht Verarbeitung ganzer Verzeichnisse (und von Einzeldateien)
+          \item Flexible Ein- und Ausgrenzung von Eingabedateien durch Wildcard-Muster (\textit{glob patterns})
+          \item Ausgabemodus durch Option steuerbar\\(Standardausgabe, Datei schreiben bzw. Original ersetzen)
+        \end{itemize}
+
+        \bigskip
+        \begin{lstlisting}[numbers=none]
+reflow \
+  --dry-run \
+  --exclude-pattern '**/tests/**/*.{js,jsx}' \
+  src/
+        \end{lstlisting}
+      \end{frame}
+
+      \begin{frame}
+        \frametitle{A5\hspace{0.75em}Originalgetreue Formatierung der Ausgabe}
+        \begin{itemize}
+          \item ursprüngliche Quelltextformatierung geht durch AST-Transformation verloren
           \item deshalb: Formatierungsroutine auf Basis von\\\textit{Prettier}~\autocite{SOFTWARE:PRETTIER} implementiert
           \item Manuelle Überprüfung der originalgetreuen\\Formatierung der Ausgabe in zwei Projekten:\\
             \medskip
             \hspace{1em}Projekt A:~~3,5\% Fehlerrate\\
             \smallskip
             \hspace{1em}Projekt B:~~5,9\% Fehlerrate
-          \item Somit: vereinzelt fehlerhafte Formatierung, aber insgesamt zu 95,3\% korrekt
+          \item Somit: vereinzelt fehlerhafte Formatierung, aber insgesamt zu 95,3\% akkurat
         \end{itemize}
       \end{frame}
 
@@ -300,7 +369,45 @@ type Alias = mixed;
       \end{frame}
 
       \begin{frame}
-        \frametitle{Z2\hspace{0.75em}Unterstützung externer Bibliotheken}
+        \frametitle{Z2\hspace{0.75em}Unterstützung externer Bibliotheken (1)}
+        Zwei Projekte pflegen Typdefinitionen für JavaScript-Bibliotheken:\\[1.5em]
+        {
+          \footnotesize
+          \begin{tabu} to \textwidth {@{}lrrrrl@{}}
+            \midrule
+            \rowfont{\bfseries} Projekt & Typdef. & Commits & Beitragende & Sterne & {} \\
+            \midrule
+            flow-typed      &  628 &  520 &  201 &  3.400 & \autocite{FLOW_TYPED} \\
+            DefinitelyTyped & 6202 & 8188 & 1785 & 25.000 & \autocite{DEFINITELY_TYPED} \\
+            \midrule
+          \end{tabu}
+          \\[1em]
+          Stand: Oktober 2019 -- Commits und Beitragende im Jahresmittel
+        }
+      \end{frame}
+
+      \begin{frame}
+        \frametitle{Z2\hspace{0.75em}Unterstützung externer Bibliotheken (2)}
+        Untersuchung der am 15 häufigsten eingesetzten Bibliotheken in migrierten Projekten von Spreadshirt:\\[1.5em]
+
+        {
+          \footnotesize
+          \begin{tabu} to \textwidth {@{}lrrl@{}}
+            \midrule
+            \rowfont{\bfseries}  {} & Flow & TypeScript \\
+            \midrule
+            Keine Typdefinition verfügbar &  4 &  1 \\
+            In Paket integriert           &  1 &  3 \\
+            Separat gepflegt              & 10 & 11 \\
+            \midrule
+            Abweichung von Hauptversion   &  0 &  2 \\
+            Abweichung von Nebenversion   &  ? &  3 \\
+            \midrule
+          \end{tabu}
+          \\[1em]
+          Stand: November 2019
+        }
+
       \end{frame}
 
       \begin{frame}
@@ -309,26 +416,48 @@ type Alias = mixed;
 
       \begin{frame}
         \frametitle{Z4\hspace{0.75em}Zukunftssicherheit und Transparenz}
+        \begin{itemize}
+          \item Problem: Verunsicherung bezüglich der Zukunft von Flow
+          \item Kommunikation laut eigener Aussage zuletzt ungenügend~\autocite{FLOW:UPDATE_2019}
+          \item nur bei TypeScript existiert ein öffentlich einsehbarer Projektplan (\textit{Roadmap})
+          \item Untersuchung wie schnell Fehlerberichte (\textit{Issues}) auf GitHub jeweils im Median geschlossen wurden:\\
+            \medskip
+            {
+              \footnotesize
+              \begin{tabu}{@{}lrr@{}}
+                \midrule
+                Flow & 11,6 Tage & 3.800 Einträge \\
+                TypeScript & 6,6 Tage & 20.000 Einträge \\
+                \midrule
+              \end{tabu}
+            }
+          \item Fazit: Mehr Planungssicherheit bei TypeScript,\\Fehlerberichte werden schneller bearbeitet
+        \end{itemize}
       \end{frame}
 
-  \section{Fazit}
-    \secframe{Fazit}
+  \section{Zusammenfassung}
+    \secframe{Zusammenfassung}
 
     \begin{frame}
-      \frametitle{Fazit}
+      \frametitle{Zusammenfassung}
+      \textbf{Erfüllung der technischen Anforderungen}\\[1em]
+      A1\hspace{0.75em}Äquivalente und vollständige Übersetzung der Flow-Typen\\[.6em]
+      A2\hspace{0.75em}Beibehaltung der Programmsemantik\\[.6em]
+      A3\hspace{0.75em}Unterstützung aktueller und vorläufiger JavaScript-\secframebr sowie JSX-Syntax (React)\\[.6em]
+      A4\hspace{0.75em}Verarbeitung gesamter Projektverzeichnisse\\[.6em]
+      A5\hspace{0.75em}Originalgetreue Formatierung der Ausgabe
+    \end{frame}
 
-      \begin{block}{Erfüllung der Ziele}
-        \begin{enumerate}
-          \item Erkennung weiterer Typ- und Programmfehler
-          \item Unterstützung externer Bibliotheken
-          \item Performance der Typüberprüfungen
-          \item Zukunftssicherheit und Transparenz der Technologie
-        \end{enumerate}
-      \end{block}
+    \begin{frame}
+      \frametitle{Zusammenfassung}
+      \textbf{Erfüllung der Ziele}\\[1em]
+      Z1\hspace{0.75em}Erkennung weiterer Typ- und Programmfehler\\[.6em]
+      Z2\hspace{0.75em}Unterstützung externer Bibliotheken\\[.6em]
+      Z3\hspace{0.75em}Performance der Typüberprüfungen\\[.6em]
+      Z4\hspace{0.75em}Zukunftssicherheit und Transparenz der Technologie
     \end{frame}
 
   \appendix
-
     \begin{frame}[noframenumbering,plain]
       % empty
     \end{frame}
@@ -350,6 +479,31 @@ type Alias = mixed;
         \item Expliziter Rückgabewert von Konstruktoren
         \item Varianz\footnote{TypeScript unterstützt nur Kovarianz}
       \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+      \frametitle{Unterstützung von Bibliotheken (Top 12) }
+      {
+        \footnotesize
+        \begin{tabu} to \textwidth {@{}lrrr@{}}
+          \midrule
+          \rowfont[l]{} Bibliothek & Version & Verfügb. Flow & Verfügb. TypeScript \\
+          \midrule
+          react             & 16.11 &	16.11~~~~~~\code{\small I}  & 16.11~~~~~~\code{\small E} \\
+          styled-components &   4.4 &	  4.x~~~~~~\code{\small E}  &   4.1~~~~~~\code{\small E} \\
+          @storybook/react  &   5.2 &   5.x~~~~~~\code{\small E}  &   4.0~~~~~~\code{\small E} \\
+          chai              &   4.2 &   4.x~~~~~~\code{\small E}  &   4.2~~~~~~\code{\small E} \\
+          react-redux       &   7.1 &	  7.x~~~~~~\code{\small E}  &   7.1~~~~~~\code{\small E} \\
+          react-apollo      &   3.1 &                        ---  &   3.1~~~~~~\code{\small I} \\
+          react-router-dom  &   5.1 &   5.x~~~~~~\code{\small E}  &   5.1~~~~~~\code{\small E} \\
+          react-loadable    &   5.5 &   5.x~~~~~~\code{\small E}  &   5.5~~~~~~\code{\small E} \\
+          lodash            &  4.17 &   4.x~~~~~~\code{\small E}  &  4.14~~~~~~\code{\small E} \\
+          react-router      &   5.1 &   5.x~~~~~~\code{\small E}  &   5.1~~~~~~\code{\small E} \\
+          es6-error         &   4.1 &   4.x~~~~~~\code{\small E}  &   4.1~~~~~~\code{\small I} \\
+          react-motion      &   0.5 &                        ---  &  0.29~~~~~~\code{\small E} \\
+          \midrule
+        \end{tabu}
+      }
     \end{frame}
 
     \begin{frame}[plain,allowframebreaks,noframenumbering]

@@ -19,6 +19,10 @@
 \usepackage[sb]{plex-sans}
 \usepackage[scale=0.8,sb]{plex-mono}
 
+% Same but smaller font for URLs
+\urlstyle{same}
+\renewcommand{\UrlFont}{\small}
+
 % Biber (references)
 \usepackage[backend=biber]{biblatex}
 \addbibresource{src/references.bib}
@@ -30,9 +34,14 @@
 \renewcommand\enumerate{\OLDenumerate\addtolength{\itemsep}{2pt}}
 
 \usepackage{csquotes}
-\usepackage{longtable, tabu, booktabs}
 \usepackage{tikz}
 \usepackage{hyperref}
+
+% Tables
+\usepackage{longtable, tabu, booktabs}
+% \setlength{\tabcolsep}{8pt}          % More space between table columns (default: 6pt)
+\renewcommand{\arraystretch}{1.15}    % More space between table rows
+\newcolumntype{C}{>{\ttfamily}l}     % New column type for code (based on l type)
 
 % Code listings
 \usepackage{listings}
@@ -44,12 +53,13 @@
   belowskip=0pt,
   breakatwhitespace=true,
   breaklines=true,
+  captionpos=b,
   comment=[l]{//},
   commentstyle=\color{darkgray},
-  emph={?, any, Array, boolean, empty, interface, mixed, never, number, null, opaque, string, this, unknown, void, T, TypeAlias},
+  emph={?, any, Array, boolean, empty, interface, mixed, never, number, null, object, opaque, string, this, undefined, unknown, void, T, TypeAlias},
   emphstyle=\itshape,
   extendedchars=false,
-  keywords={abstract, arguments, await, boolean, break, byte, case, catch, char, class, const, continue, debugger, declare, default, delete, do, double, else, enum, eval, export, extends, false, final, finally, float, for, function, goto, if, implements, import, in, instanceof, int, let, long, module, native, new, of, package, private, protected, public, return, short, static, super, switch, synchronized, this, throw, throws, transient, true, try, typeof, var, volatile, while, with, yield, type},
+  keywords={abstract, arguments, await, break, byte, case, catch, char, class, const, continue, debugger, declare, default, delete, do, double, else, enum, eval, export, extends, false, final, finally, float, for, function, goto, if, implements, import, in, instanceof, int, let, long, module, native, new, of, package, private, protected, public, return, short, static, super, switch, synchronized, this, throw, throws, transient, true, try, typeof, var, volatile, while, with, yield, type},
   keywordstyle=\bfseries,
   morecomment=[s]{/*}{*/},
   morestring=[b]',
@@ -160,6 +170,8 @@
 
 % Titlepage
 \input{src/title.tex}
+
+\newcommand{\code}[1]{{\texttt{#1}}}
 
 \newcommand{\pie}[1]{%
 	\begin{tikzpicture}%
