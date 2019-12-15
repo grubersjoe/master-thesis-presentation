@@ -21,7 +21,7 @@
     \secframe{Problemstellung}
 
     \begin{frame}
-      \frametitle{Motivation}
+      \frametitle{Motivation -- statische Typen für JavaScript}
       \begin{itemize}
         \item JavaScripts \textbf{dynamische Typisierung} erschwert die Entwicklung korrekter, sicherer und wartbarer Anwendungen~\autocite{NIKHIL:2014,PRADEL:2015,BIERMAN:2014}
         \item Typ von Werten wird zur Laufzeit implizit umgewandelt (\textit{type coercion})
@@ -52,7 +52,7 @@ linearSearch<string>(['foo', 'bar', 'baz'], 3);  // Typfehler
     \frame{
       \frametitle{Zielsetzung der Masterarbeit}
       \begin{itemize}
-        \item Ausgangslage: \textit{Spreadshirt} setzt Flow zur statischen Typisierung von JavaScript-Anwendungen ein
+        \item Ausgangslage: das Unternehmen \textit{Spreadshirt} setzt Flow zur statischen Typisierung von JavaScript ein
         \item Ziel: Migration bestehender Flow"=Projekte nach TypeScript
         \item Händische Migration fehleranfällig und zeitaufwändig
         \item Lösung: Entwicklung eines \textbf{Transpilers} zur Übersetzung der Flow-Typisierung nach TypeScript
@@ -79,10 +79,15 @@ type MaybeNumber = number | null | undefined;
 
     \begin{frame}
       \frametitle{Ziele der Migration zu TypeScript}
-      \textbf{Z1}\hspace{0.75em}Erkennung weiterer Typ- und Programmfehler\\[.6em]
-      \textbf{Z2}\hspace{0.75em}Unterstützung externer Bibliotheken\\[.6em]
-      \textbf{Z3}\hspace{0.75em}Performance der Typüberprüfungen\\[.6em]
-      \textbf{Z4}\hspace{0.75em}Zukunftssicherheit und Transparenz der Technologie
+      {
+        \renewcommand{\arraystretch}{1.4}
+        \begin{tabu} to \textwidth {@{}lX@{}}
+          \textbf{Z1} & Erkennung weiterer Typ- und Programmfehler \\
+          \textbf{Z2} & Unterstützung externer Bibliotheken \\
+          \textbf{Z3} & Performance der Typüberprüfungen \\
+          \textbf{Z4} & Zukunftssicherheit und Transparenz der Technologie \\
+        \end{tabu}
+      }
     \end{frame}
 
   \section{Statische Typsysteme}
@@ -91,11 +96,11 @@ type MaybeNumber = number | null | undefined;
     \begin{frame}
       \frametitle{Flow}
       \begin{itemize}
-        \item ermöglicht Verwendung von Typannotationen in\\ regulären JavaScript-Quelltexten
-        \item Typüberprüfung durch Server im Hintergrund
+        \item ermöglicht Verwendung von Typannotationen in\\ regulärem JavaScript-Code
+        \item kontinuierliche Typüberprüfung durch Server im Hintergrund
         \item Fokus auf Korrektheit\footnote{engl. \textit{Soundness}} des Typsystems
         \item globale Typinferenz durch pfadsensitive Datenflussanalyse
-        \item Typsystem größtenteils strukturell, z. T. nominal
+        \item Typsystem größtenteils strukturell, teilweise nominal
         \item Parallelisierung der Typüberprüfung
       \end{itemize}
     \end{frame}
@@ -118,11 +123,19 @@ type MaybeNumber = number | null | undefined;
 
     \begin{frame}
       \frametitle{Technische Anforderungen an den Transpiler}
-      \textbf{A1}\hspace{0.75em}Äquivalente und vollständige Übersetzung der Flow-Typen\\[.6em]
-      \textbf{A2}\hspace{0.75em}Beibehaltung der Programmsemantik\\[.6em]
-      \textbf{A3}\hspace{0.75em}Unterstützung aktueller und vorläufiger\footnote{gemeint sind \textit{ECMAScript proposals}~\autocite{ES_PROPOSALS}} JavaScript-\secframebr sowie JSX-Syntax (React)\\[.6em]
-      \textbf{A4}\hspace{0.75em}Verarbeitung gesamter Projektverzeichnisse\\[.6em]
-      \textbf{A5}\hspace{0.75em}Originalgetreue Formatierung der Ausgabe
+      {
+        \renewcommand{\arraystretch}{1.4}
+        \begin{tabu} to \textwidth {@{}lX@{}}
+          \textbf{A1} & Äquivalente und vollständige Übersetzung der Flow-Typen \\
+          \textbf{A2} & Beibehaltung der Programmsemantik \\
+          \textbf{A3} & Unterstützung aktueller und vorläufiger\footnotemark{} JavaScript-\newline sowie JSX-Syntax (React) \\
+          \textbf{A4} & Verarbeitung gesamter Projektverzeichnisse \\
+          \textbf{A5} & Originalgetreue Formatierung der Ausgabe \\
+        \end{tabu}
+        \\[0.75em]
+        \footnotetext{gemeint sind \textit{ECMAScript proposals}~\autocite{ES_PROPOSALS}}
+      }
+
     \end{frame}
 
     % \begin{frame}
@@ -308,9 +321,9 @@ Transpiling example.js...
       \begin{frame}
         \frametitle{A2\hspace{0.75em}Beibehaltung der Programmsemantik}
           \begin{itemize}
-            \item Voraussetzung: Transpiler adressiert lediglich Flow-Typen ohne unbeabsichtigte Nebenwirkung
+            \item Voraussetzung: Transpiler adressiert nur Flow-Typen,\\hat keine unbeabsichtigte Nebenwirkung
             \item Verifizierung dieser Bedingung durch Fixture-Tests
-            \item Überprüfung der Beibehaltung der Semantik durch 373 bzw. 326 Modultests der migrierten Projekte\\
+            \item Überprüfung der Semantik-Beibehaltung durch\\373 bzw. 326 Modultests der migrierten Projekte\\
               \smallskip
               $\Rightarrow$ keine Fehler, Anforderung scheint somit erfüllt
             \item aber: Testabdeckung bei 90,5\% bzw. lediglich 18,0\%
@@ -321,8 +334,8 @@ Transpiling example.js...
       \begin{frame}
         \frametitle{A3\hspace{0.75em}Unterstützung von JavaScript- und JSX-Syntax}
         \begin{itemize}
-          \item Babel wurde gewählt zur Erfüllung dieser Anforderung
-          \item Unterstützung für vorläufige JavaScript und JSX-Syntax durch entsprechende Babel-Plugins
+          \item vollständige Unterstützung von ECMAScript 10 (2019) durch Babel
+          \item Verarbeitung von vorläufiger JavaScript und JSX-Syntax mittels entsprechender Babel-Plugins
           \item Anforderung damit erfüllt
         \end{itemize}
       \end{frame}
@@ -354,11 +367,11 @@ reflow \
             {
               \footnotesize
               \begin{tabu} to \textwidth {@{}lr@{}}
-                Components & 3,5\% Fehlerrate \\
-                Helios     & 5,9\% Fehlerrate \\
+                Projekt Components & 3,5\% Fehlerrate \\
+                Projekt Helios     & 5,9\% Fehlerrate \\
               \end{tabu}
             }
-          \item Somit: vereinzelt Fehler, aber originalgetreue\\Formatierung in 95,3\% der Fälle
+          \item Fazit: vereinzelt Fehler, aber originalgetreue\\Formatierung in 95,3\% der Fälle
         \end{itemize}
       \end{frame}
 
@@ -370,9 +383,26 @@ reflow \
       \begin{frame}
         \frametitle{Z1\hspace{0.75em}Erkennung weiterer Typ- und Programmfehler}
 
-        TODO: Tabelle mit Top 5 der neu erkannten Fehler oder so\\
-
-        Großteil der neu aufgetrenen Typfehler stellt keine Programmfehler dar.
+        Nach Migration 543 bzw. 404 neue nicht-strikte Typfehler in Projekten Components bzw. Helios:\\[1em]
+        {
+          \footnotesize
+          \begin{tabu} to \textwidth {@{}rrX@{}}
+            \midrule
+            \rowfont[l]{\bfseries} Anzahl & Fehler & Beschreibung \\
+            \midrule
+            272	& TS2322 & Typ \codei{x} ist Typ \codei{y} nicht zuweisbar \\
+            205	& TS2307 & Modul \codei{x} kann nicht gefunden werden \\
+            128	& TS2345 & Argument mit Typ \codei{x} ist Param. mit Typ \codei{y} nicht zuweisbar \\
+            94	& TS2339 & Attribut \codei{x} existiert nicht in Typ \codei{y} \\
+            72	& TS2605 & Modul \codei{x} exportiert kein Element \codei{y} \\
+            % 54	& TS2304 & Name \codei{x} kann nicht gefunden werden \\
+            % 25	& TS2538 & Typ \codei{x} darf nicht als Index-Typ verwendet werden \\
+            % 23	& TS2741 & Attribut \codei{x} fehlt in Typ \codei{y}, wird aber von Typ \codei{z} erwartet \\
+            \midrule
+          \end{tabu}
+        }
+        \\[1em]
+        aber: Großteil der Typverletzungen stellen keine Programmfehler dar
       \end{frame}
 
       \begin{frame}
@@ -382,10 +412,10 @@ reflow \
           \begin{itemize}
             \item Prinzipielle Unterschiede von Flow und TypeScript
             \item Integration externer Typdefinitionen
-            \item Unzulänglichkeiten der vorherigen Flow-Typisierung
+            \item Unzulänglichkeiten der vorherigen Typisierung mit Flow
           \end{itemize}
         \end{block}
-
+        \smallskip
         \begin{block}{Von TypeScript aufgedeckte Programmfehler}
           \begin{itemize}
             \item Zusätzliche Objektattribute bei Funktionsargumenten
@@ -415,13 +445,12 @@ reflow \
 
       \begin{frame}
         \frametitle{Z2\hspace{0.75em}Unterstützung externer Bibliotheken (2)}
-        Untersuchung der am 15 häufigsten eingesetzten\\Bibliotheken in migrierten Projekten von Spreadshirt:\\[1.5em]
-
+        Untersuchung der 15 am häufigsten eingesetzten\\Bibliotheken in migrierten Projekten:\\[1em]
         {
           \footnotesize
           \begin{tabu} to \textwidth {@{}lrrl@{}}
             \midrule
-            \rowfont{\bfseries}  {} & Flow & TypeScript \\
+            \rowfont{\bfseries} {} & Flow & TypeScript \\
             \midrule
             Keine Typdefinition verfügbar &  4 &  1 \\
             In Paket integriert           &  1 &  3 \\
@@ -431,10 +460,11 @@ reflow \
             Abweichung von Nebenversion   &  ? &  3 \\
             \midrule
           \end{tabu}
-          \\[1em]
+          \\[.75em]
           Stand: November 2019
         }
-
+        \\[1.25em]
+        aber: für diese Auswahl von Bibliotheken nur\\geringfügige Vorteile bei TypeScript
       \end{frame}
 
       \begin{frame}
@@ -462,8 +492,8 @@ reflow \
         \begin{itemize}
           \item Problem: Verunsicherung bezüglich der Zukunft von Flow
           \item Kommunikation laut eigener Aussage zuletzt ungenügend~\autocite{FLOW:UPDATE_2019}
-          \item nur bei TypeScript existiert ein öffentlich einsehbarer Projektplan (\textit{Roadmap})
-          \item Untersuchung wie schnell Fehlerberichte (\textit{Issues}) auf GitHub im Median jeweils geschlossen wurden:\\
+          \item öffentlich einsehbarer Projektplan (\textit{Roadmap}) nur bei TypeScript verfügbar
+          \item Untersuchung wie schnell Fehlerberichte (\textit{Issues}) auf GitHub im Median geschlossen wurden:\\
             \vspace{.5em}
             {
               \footnotesize
@@ -482,20 +512,30 @@ reflow \
     \begin{frame}
       \frametitle{Zusammenfassung}
       \textbf{Erfüllung der technischen Anforderungen}\\[1em]
-      A1\hspace{0.75em}Äquivalente und vollständige Übersetzung der Flow-Typen\\[.6em]
-      A2\hspace{0.75em}Beibehaltung der Programmsemantik\\[.6em]
-      A3\hspace{0.75em}Unterstützung aktueller und vorläufiger JavaScript-\secframebr sowie JSX-Syntax (React)\\[.6em]
-      A4\hspace{0.75em}Verarbeitung gesamter Projektverzeichnisse\\[.6em]
-      A5\hspace{0.75em}Originalgetreue Formatierung der Ausgabe
+      {
+        \renewcommand{\arraystretch}{1.4}
+        \begin{tabu} to \textwidth {@{}lX@{}}
+          \textbf{A1} & Äquivalente und vollständige Übersetzung der Flow-Typen \\
+          \textbf{A2} & Beibehaltung der Programmsemantik \\
+          \textbf{A3} & Unterstützung aktueller und vorläufiger JavaScript- sowie JSX-Syntax (React) \\
+          \textbf{A4} & Verarbeitung gesamter Projektverzeichnisse \\
+          \textbf{A5} & Originalgetreue Formatierung der Ausgabe \\
+        \end{tabu}
+      }
     \end{frame}
 
     \begin{frame}
       \frametitle{Zusammenfassung}
       \textbf{Erfüllung der Ziele}\\[1em]
-      Z1\hspace{0.75em}Erkennung weiterer Typ- und Programmfehler\\[.6em]
-      Z2\hspace{0.75em}Unterstützung externer Bibliotheken\\[.6em]
-      Z3\hspace{0.75em}Performance der Typüberprüfungen\\[.6em]
-      Z4\hspace{0.75em}Zukunftssicherheit und Transparenz der Technologie
+      {
+        \renewcommand{\arraystretch}{1.4}
+        \begin{tabu} to \textwidth {@{}lX@{}}
+          \textbf{Z1} & Erkennung weiterer Typ- und Programmfehler \\
+          \textbf{Z2} & Unterstützung externer Bibliotheken \\
+          \textbf{Z3} & Performance der Typüberprüfungen \\
+          \textbf{Z4} & Zukunftssicherheit und Transparenz der Technologie \\
+        \end{tabu}
+      }
     \end{frame}
 
   \appendix
@@ -511,9 +551,10 @@ reflow \
       \input{src/tables/tools.tex}
     \end{frame}
 
-    \begin{frame}[noframenumbering]
-      \frametitle{Formatierungsroutine}
-      TODO: Abbildung von Formatierung
+    \begin{frame}[noframenumbering,plain]
+      \begin{figure}
+        \includegraphics[width=.62\textwidth]{src/figures/formatting.pdf}
+      \end{figure}
     \end{frame}
 
     \begin{frame}[noframenumbering]
@@ -524,6 +565,17 @@ reflow \
         \item \textit{Opaque type}
         \item Expliziter Rückgabewert von Konstruktoren
         \item Varianz\footnote{TypeScript unterstützt nur Kovarianz}
+      \end{itemize}
+    \end{frame}
+
+    \begin{frame}[noframenumbering]
+      \frametitle{Vergleich mit Kikura~\autocite{KIKURA} und Barabash~\autocite{BARABASH}}
+      \begin{itemize}
+        \item während der Ausarbeit parallel entstandene Ansätze zur Transpilierung von Flow
+        \item Test mit Fixture-Dateien
+        \item Absturz in 54,8\% bzw. 9,7\% der Fälle
+        \item fehlerhafte Transformtionen in 1,9\% bzw. 11,0\% der Fälle
+        \item außerdem: zum Teil Abstürze bei bestimmter (valider) Eingabesyntax
       \end{itemize}
     \end{frame}
 
@@ -567,14 +619,85 @@ reflow \
       }
     \end{frame}
 
-    \begin{frame}[noframenumbering]
-      \frametitle{Testsysteme}
-      TODO: Messdaten Complete
+    \begin{frame}[noframenumbering,allowframebreaks]
+      \frametitle{Performance -- Vollständige Typüberprüfung}
+      {
+        \footnotesize
+        \textbf{Projekt Components}\\[1em]
+        \begin{tabu} to \textwidth {@{}rrr|rr|r@{}}
+          \midrule
+          {} & \multicolumn{2}{l|}{Flow} & \multicolumn{2}{l|}{TypeScript} \\
+          \rowfont[c]{} S & Laufzeit & s & Laufzeit & s & rel. $\Delta$  \\
+          \midrule
+          A & 7,87 & 0,09 & 15,50 & 0,08 & 97,0\% \\
+          B & 6,86 & 0,05 & 10,59 & 0,06 & 54,4\% \\
+          C & 6,50 & 0,02 &  9,56 & 0,05 & 47,1\% \\
+          D & 3,38 & 0,02 &  6,41 & 0,04 & 89,6\% \\
+          \midrule
+        \end{tabu}
+        \\[.75em]
+        Laufzeit in Sekunden mit Standardabweichung s
+
+        \framebreak
+
+        \textbf{Projekt Helios}\\[1em]
+        \begin{tabu} to \textwidth {@{}rrr|rr|r@{}}
+          \midrule
+          {} & \multicolumn{2}{l|}{Flow} & \multicolumn{2}{l|}{TypeScript} \\
+          \rowfont[c]{} S & Laufzeit & s & Laufzeit & s & rel. $\Delta$  \\
+          \midrule
+          A & 12,20 & 0,16 & 13,06 & 0,70 &   7,1\% \\
+          B & 10,90 & 0,33 &  8,49 & 0,16 & -22,1\% \\
+          C & 11,70 & 0,07 &  7,63 & 0,04 & -34,8\% \\
+          D &  5,15 & 0,02 &  4,94 & 0,03 &  -4,1\% \\
+          \midrule
+        \end{tabu}
+        \\[.75em]
+        Laufzeit in Sekunden mit Standardabweichung s
+      }
     \end{frame}
 
-    \begin{frame}[noframenumbering]
-      \frametitle{Testsysteme}
-      TODO: Messdaten Cores
+    \begin{frame}[noframenumbering,allowframebreaks]
+      \frametitle{Performance -- Einfluss Parallelisierung}
+      {
+        \footnotesize
+
+        \textbf{Projekt Components}\\[1em]
+        \begin{tabu} to \textwidth {@{}rrr|rr|r@{}}
+          \midrule
+          {} & \multicolumn{2}{l|}{Flow} & \multicolumn{2}{l}{TypeScript} \\
+          \rowfont[c]{} K & Laufzeit & s & Laufzeit & s & rel. $\Delta$   \\
+          \midrule
+          1 & 10,59 & 0,03 & 10,13 & 0,03 & -4,3\% \\
+          2 &  6,19 & 0,02 &  6,85 & 0,05 & 10,7\% \\
+          3 &  4,74 & 0,03 &  6,50 & 0,02 & 37,1\% \\
+          4 &  4,05 & 0,03 &  6,43 & 0,02 & 58,8\% \\
+          5 &  3,79 & 0,04 &  6,48 & 0,02 & 71,0\% \\
+          6 &  3,63 & 0,02 &  6,41 & 0,04 & 76,6\% \\
+          7 &  3,52 & 0,02 &  6,40 & 0,03 & 81,8\% \\
+          8 &  3,42 & 0,02 &  6,40 & 0,03 & 87,1\% \\
+          \midrule
+        \end{tabu}
+
+        \framebreak
+
+        \textbf{Projekt Helios}\\[1em]
+        \begin{tabu} to \textwidth {@{}rrr|rr|r@{}}
+          \midrule
+          {} & \multicolumn{2}{l|}{Flow} & \multicolumn{2}{l}{TypeScript} \\
+          \rowfont[c]{} K & Laufzeit & s & Laufzeit & s & rel. $\Delta$   \\
+          \midrule
+          1 & 17,26 & 0,05 & 8,81 & 0,01 & -49,0\% \\
+          2 &  9,61 & 0,04 & 5,44 & 0,04 & -43,4\% \\
+          3 &  7,23 & 0,03 & 5,03 & 0,02 & -30,4\% \\
+          4 &  6,16 & 0,04 & 4,95 & 0,01 & -19,6\% \\
+          5 &  5,82 & 0,03 & 5,04 & 0,15 & -13,4\% \\
+          6 &  5,51 & 0,03 & 4,94 & 0,03 & -10,3\% \\
+          7 &  5,31 & 0,03 & 4,93 & 0,03 &  -7,2\% \\
+          8 &  5,16 & 0,02 & 4,94 & 0,03 &  -4,3\% \\
+          \midrule
+        \end{tabu}
+      }
     \end{frame}
 
     \begin{frame}[plain,allowframebreaks,noframenumbering]
