@@ -1,6 +1,6 @@
 #!/usr/bin/gnuplot
 
-set terminal cairolatex pdf input size 11.75cm,7cm
+set terminal cairolatex pdf input size 10.5cm,7cm
 set output 'components-plot.tex'
 
 # set terminal pngcairo dashed size 1300,800
