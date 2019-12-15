@@ -53,7 +53,7 @@ linearSearch<string>(['foo', 'bar', 'baz'], 3);  // Typfehler
       \frametitle{Zielsetzung der Masterarbeit}
       \begin{itemize}
         \item Ausgangslage: das Unternehmen \textit{Spreadshirt} setzt Flow zur statischen Typisierung von JavaScript ein
-        \item Ziel: Migration bestehender Flow"=Projekte nach TypeScript
+        \item Ziel: Migration bestehender Flow"=Projekte\\nach TypeScript
         \item Händische Migration fehleranfällig und zeitaufwändig
         \item Lösung: Entwicklung eines \textbf{Transpilers} zur Übersetzung der Flow-Typisierung nach TypeScript
         \item Transpiler = Compiler, der Quelltext einer Programmier"=sprache in andere übersetzt
@@ -81,7 +81,7 @@ type MaybeNumber = number | null | undefined;
       \frametitle{Ziele der Migration zu TypeScript}
       {
         \renewcommand{\arraystretch}{1.4}
-        \begin{tabu} to \textwidth {@{}lX@{}}
+        \begin{tabu} to \textwidth {@{}lX[l]@{}}
           \textbf{Z1} & Erkennung weiterer Typ- und Programmfehler \\
           \textbf{Z2} & Unterstützung externer Bibliotheken \\
           \textbf{Z3} & Performance der Typüberprüfungen \\
@@ -97,10 +97,10 @@ type MaybeNumber = number | null | undefined;
       \frametitle{Flow}
       \begin{itemize}
         \item ermöglicht Verwendung von Typannotationen in\\ regulärem JavaScript-Code
-        \item kontinuierliche Typüberprüfung durch Server im Hintergrund
+        \item Typüberprüfung durch Server im Hintergrund
         \item Fokus auf Korrektheit\footnote{engl. \textit{Soundness}} des Typsystems
         \item globale Typinferenz durch pfadsensitive Datenflussanalyse
-        \item Typsystem größtenteils strukturell, teilweise nominal
+        \item Typsystem größtenteils strukturell, zum Teil nominal
         \item Parallelisierung der Typüberprüfung
       \end{itemize}
     \end{frame}
@@ -108,7 +108,7 @@ type MaybeNumber = number | null | undefined;
     \begin{frame}
       \frametitle{TypeScript}
       \begin{itemize}
-        \item vollständige Programmiersprache mit\\statischer Typisierung
+        \item vollständige Programmiersprache mit statischen Typen
         \item Syntax ist strikte Obermenge von JavaScript
         \item Typüberprüfung und Übersetzung nach JavaScript\\durch TypeScript-Compiler
         \item \enquote{\textit{Balance zwischen Korrektheit und Produktivität}}~\autocite{TYPESCRIPT:DESIGN_GOALS}
@@ -125,7 +125,7 @@ type MaybeNumber = number | null | undefined;
       \frametitle{Technische Anforderungen an den Transpiler}
       {
         \renewcommand{\arraystretch}{1.4}
-        \begin{tabu} to \textwidth {@{}lX@{}}
+        \begin{tabu} to \textwidth {@{}lX[l]@{}}
           \textbf{A1} & Äquivalente und vollständige Übersetzung der Flow-Typen \\
           \textbf{A2} & Beibehaltung der Programmsemantik \\
           \textbf{A3} & Unterstützung aktueller und vorläufiger\footnotemark{} JavaScript-\newline sowie JSX-Syntax (React) \\
@@ -173,8 +173,7 @@ type MaybeNumber = number | null | undefined;
     \end{frame}
 
     \begin{frame}[fragile]
-      \frametitle{Beispiel -- Transformation des AST}
-
+      \frametitle{Transformation des AST -- Beispiel}
       \begin{columns}
         \begin{column}{.48\textwidth}
           \begin{lstlisting}[numbers=none]
@@ -260,20 +259,7 @@ class C {                             class C
   \section{Ergebnisse}
     \secframe{Ergebnisse und\secframebr Auswertung}
 
-    % \begin{frame}
-    %   \frametitle{Durchführung der Migration}
-    %   \begin{itemize}
-    %     \item Zwei Projekte von Spreadshirt wurden mit Hilfe des Transpilers erfolgreich migriert
-    %     \item aber: daraufhin zahlreiche neue Typfehler
-    %     \item manuelle Korrektur dieser Fehler notwendig
-    %   \end{itemize}
-    % \end{frame}
-
     \subsection{Technische Anforderungen}
-      % \begin{frame}
-      %   \LARGE\textbf{Erfüllung der technischen Anforderungen}
-      % \end{frame}
-
       \begin{frame}
         \frametitle{A1\hspace{0.75em}Äquivalenz der Typ-Übersetzungen (1)}
         \begin{itemize}
@@ -283,7 +269,7 @@ class C {                             class C
             $\Rightarrow$ Verlust von Typinformation hier unvermeidbar
           \item keine äquivalente TypeScript-Audrücke für 3 der 17 Hilfstypen von Flow gefunden\\
             \smallskip
-            $\Rightarrow$ Ersetzung mit Typ \textit{any}
+            $\Rightarrow$ Ersetzung mit Typ \code{\large any}
         \end{itemize}
       \end{frame}
 
@@ -334,7 +320,7 @@ Transpiling example.js...
       \begin{frame}
         \frametitle{A3\hspace{0.75em}Unterstützung von JavaScript- und JSX-Syntax}
         \begin{itemize}
-          \item vollständige Unterstützung von ECMAScript 10 (2019) durch Babel
+          \item vollständige Unterstützung von ECMAScript 10 (ES2019) durch Babel
           \item Verarbeitung von vorläufiger JavaScript und JSX-Syntax mittels entsprechender Babel-Plugins
           \item Anforderung damit erfüllt
         \end{itemize}
@@ -376,17 +362,12 @@ reflow \
       \end{frame}
 
     \subsection{Ziele}
-      % \begin{frame}
-      %   \LARGE\textbf{Erfüllung der Zielvorgaben}
-      % \end{frame}
-
       \begin{frame}
         \frametitle{Z1\hspace{0.75em}Erkennung weiterer Typ- und Programmfehler}
-
-        Nach Migration 543 bzw. 404 neue nicht-strikte Typfehler in Projekten Components bzw. Helios:\\[1em]
+        Nach Migration 543 bzw. 404 neue nicht-strikte Typfehler in Projekten Components und Helios:\\[1em]
         {
           \footnotesize
-          \begin{tabu} to \textwidth {@{}rrX@{}}
+          \begin{tabu} to \textwidth {@{}rrX[l]@{}}
             \midrule
             \rowfont[l]{\bfseries} Anzahl & Fehler & Beschreibung \\
             \midrule
@@ -407,7 +388,6 @@ reflow \
 
       \begin{frame}
         \frametitle{Z1\hspace{0.75em}Erkennung weiterer Typ- und Programmfehler}
-
         \begin{block}{Ursachen neu aufgetrener Typfehler}
           \begin{itemize}
             \item Prinzipielle Unterschiede von Flow und TypeScript
@@ -464,7 +444,7 @@ reflow \
           Stand: November 2019
         }
         \\[1.25em]
-        aber: für diese Auswahl von Bibliotheken nur\\geringfügige Vorteile bei TypeScript
+        Für diese Auswahl von Bibliotheken nur geringfügige Vorteile bei TypeScript bezüglich Verfügbarkeit und Aktualität
       \end{frame}
 
       \begin{frame}
@@ -490,8 +470,8 @@ reflow \
       \begin{frame}
         \frametitle{Z4\hspace{0.75em}Zukunftssicherheit und Transparenz}
         \begin{itemize}
-          \item Problem: Verunsicherung bezüglich der Zukunft von Flow
-          \item Kommunikation laut eigener Aussage zuletzt ungenügend~\autocite{FLOW:UPDATE_2019}
+          % \item Problem: Verunsicherung bezüglich der Zukunft von Flow
+          \item Flow: Kommunikation laut eigener Aussage zuletzt ungenügend~\autocite{FLOW:UPDATE_2019}
           \item öffentlich einsehbarer Projektplan (\textit{Roadmap}) nur bei TypeScript verfügbar
           \item Untersuchung wie schnell Fehlerberichte (\textit{Issues}) auf GitHub im Median geschlossen wurden:\\
             \vspace{.5em}
@@ -510,32 +490,32 @@ reflow \
     \secframe{Zusammenfassung}
 
     \begin{frame}
-      \frametitle{Zusammenfassung}
-      \textbf{Erfüllung der technischen Anforderungen}\\[1em]
+      \frametitle{Fazit -- Erfüllung der technischen Anforderungen}
       {
-        \renewcommand{\arraystretch}{1.4}
-        \begin{tabu} to \textwidth {@{}lX@{}}
-          \textbf{A1} & Äquivalente und vollständige Übersetzung der Flow-Typen \\
-          \textbf{A2} & Beibehaltung der Programmsemantik \\
-          \textbf{A3} & Unterstützung aktueller und vorläufiger JavaScript- sowie JSX-Syntax (React) \\
-          \textbf{A4} & Verarbeitung gesamter Projektverzeichnisse \\
-          \textbf{A5} & Originalgetreue Formatierung der Ausgabe \\
+        \renewcommand{\arraystretch}{1.75}
+        \begin{tabu} to \textwidth {@{}lX[l]@{}}
+          \textbf{A1} & Äquivalente und vollständige Übersetzung der Flow-Typen\concl{Vollständigkeit erzielt, Äquivalenz bis auf wenige Ausnahmen} \\
+          \textbf{A2} & Beibehaltung der Programmsemantik\concl{Inzwischen ein Fehler bekannt, ansonsten erreicht} \\
+          \textbf{A3} & Unterstützung aktueller und vorläufiger JavaScript-\newline sowie JSX-Syntax\concl{Umgesetzt} \\
+          \textbf{A4} & Verarbeitung gesamter Projektverzeichnisse\concl{Umgesetzt} \\
+          \textbf{A5} & Originalgetreue Formatierung der Ausgabe\concl{Größtenteils erzielt} \\
         \end{tabu}
       }
     \end{frame}
 
     \begin{frame}
-      \frametitle{Zusammenfassung}
-      \textbf{Erfüllung der Ziele}\\[1em]
+      \frametitle{Fazit -- Erfüllung der Ziele}
       {
-        \renewcommand{\arraystretch}{1.4}
-        \begin{tabu} to \textwidth {@{}lX@{}}
-          \textbf{Z1} & Erkennung weiterer Typ- und Programmfehler \\
-          \textbf{Z2} & Unterstützung externer Bibliotheken \\
-          \textbf{Z3} & Performance der Typüberprüfungen \\
-          \textbf{Z4} & Zukunftssicherheit und Transparenz der Technologie \\
+        \renewcommand{\arraystretch}{1.75}
+        \begin{tabu} to \textwidth {@{}lX[l]@{}}
+          \textbf{Z1} & Erkennung weiterer Typ- und Programmfehler\concl{Einige Programmfehler durch TypeScript aufgedeckt} \\
+          \textbf{Z2} & Unterstützung externer Bibliotheken\concl{Deutlich mehr Bibliotheken durch TypeScript unterstützt} \\
+          \textbf{Z3} & Performance der Typüberprüfungen\concl{Teilweise verbessert, Flow ist aber prinzipiell überlegen} \\
+          \textbf{Z4} & Zukunftssicherheit und Transparenz der Technologie\concl{Größere Transparenz und Planungssicherheit bei TypeScript} \\
         \end{tabu}
       }
+      \\[1.25em]
+      Somit: Drei der Ziele wurden ereicht, Z3 nur teilweise.
     \end{frame}
 
   \appendix
@@ -548,7 +528,47 @@ reflow \
 
     \begin{frame}[noframenumbering]
       \frametitle{Evaluation bestehender Werkzeuge}
-      \input{src/tables/tools.tex}
+      {
+        \footnotesize
+        \begin{tabu} to \textwidth {@{}lllccccccrrX@{}}
+          \midrule
+          Werkzeug & Typ & Format & Erw. & ES10 & ES10+ & Flow & TS & JSX \\
+          \midrule
+          Acorn     & P  &  ESTree  & \pie{2} & \pie{2} & \pie{1} & \pie{0} & \pie{0} & \pie{2} \\ % 2012
+          Astring   & G  &  ESTree  & \pie{2} & \pie{2} & \pie{1} & \pie{0} & \pie{0} & \pie{0} \\ % 2015
+          Babel     & PG &  Babel   & \pie{2} & \pie{2} & \pie{2} & \pie{2} & \pie{2} & \pie{2} \\ % 2014
+          Escodegen & G  &  ESTree  & \pie{0} & \pie{0} & \pie{0} & \pie{0} & \pie{0} & \pie{0} \\ % 2012
+          Esprima   & P  &  ESTree  & \pie{0} & \pie{1} & \pie{0} & \pie{0} & \pie{0} & \pie{1} \\ % 2011
+          Recast    & PG &  diverse & \pie{2} & \pie{2} & \pie{2} & \pie{2} & \pie{2} & \pie{2} \\ % 2012
+          \midrule
+        \end{tabu}
+
+        \vspace{5mm}
+        \begin{columns}[T]
+          \begin{column}{0.4\textwidth}
+            {
+              \renewcommand{\arraystretch}{1.1}
+              \begin{tabular}{@{}ll@{}}
+                P & Parser\\
+                G & Codegenerator\\
+                \pie{0} & keine Unterstützung\\
+                \pie{1} & teilweise Unterstützung\\
+                \pie{2} & vollständige Unterstützung\\
+              \end{tabular}
+            }
+          \end{column}
+          \begin{column}{0.5\textwidth}
+            {
+              \renewcommand{\arraystretch}{1.1}
+              \begin{tabular}{@{}ll@{}}
+                ES10 & ECMAScript 2019\\
+                ES10+ & vorgeschlagene Spracherw.\\
+                TS & TypeScript\\
+              \end{tabular}
+            }
+          \end{column}
+        \end{columns}
+      }
     \end{frame}
 
     \begin{frame}[noframenumbering,plain]
@@ -573,8 +593,8 @@ reflow \
       \begin{itemize}
         \item während der Ausarbeit parallel entstandene Ansätze zur Transpilierung von Flow
         \item Test mit Fixture-Dateien
-        \item Absturz in 54,8\% bzw. 9,7\% der Fälle
-        \item fehlerhafte Transformtionen in 1,9\% bzw. 11,0\% der Fälle
+        \item Absturz bei Kikura bzw. Barabash in 54,8\% bzw. 9,7\% der Fälle
+        \item fehlerhafte Transformtionen bei Kikura bzw. Barabash in 1,9\% bzw. 11,0\% der Fälle
         \item außerdem: zum Teil Abstürze bei bestimmter (valider) Eingabesyntax
       \end{itemize}
     \end{frame}
@@ -619,8 +639,8 @@ reflow \
       }
     \end{frame}
 
-    \begin{frame}[noframenumbering,allowframebreaks]
-      \frametitle{Performance -- Vollständige Typüberprüfung}
+    \begin{frame}[noframenumbering]
+      \frametitle{Performance -- Vollständige Typüberprüfung (1)}
       {
         \footnotesize
         \textbf{Projekt Components}\\[1em]
@@ -637,9 +657,13 @@ reflow \
         \end{tabu}
         \\[.75em]
         Laufzeit in Sekunden mit Standardabweichung s
+      }
+    \end{frame}
 
-        \framebreak
-
+    \begin{frame}[noframenumbering]
+      \frametitle{Performance -- Vollständige Typüberprüfung (2)}
+      {
+        \footnotesize
         \textbf{Projekt Helios}\\[1em]
         \begin{tabu} to \textwidth {@{}rrr|rr|r@{}}
           \midrule
@@ -657,8 +681,8 @@ reflow \
       }
     \end{frame}
 
-    \begin{frame}[noframenumbering,allowframebreaks]
-      \frametitle{Performance -- Einfluss Parallelisierung}
+    \begin{frame}[noframenumbering]
+      \frametitle{Performance -- Einfluss Parallelisierung (1)}
       {
         \footnotesize
 
@@ -678,9 +702,13 @@ reflow \
           8 &  3,42 & 0,02 &  6,40 & 0,03 & 87,1\% \\
           \midrule
         \end{tabu}
+      }
+    \end{frame}
 
-        \framebreak
-
+    \begin{frame}[noframenumbering]
+      \frametitle{Performance -- Einfluss Parallelisierung (2)}
+      {
+        \footnotesize
         \textbf{Projekt Helios}\\[1em]
         \begin{tabu} to \textwidth {@{}rrr|rr|r@{}}
           \midrule

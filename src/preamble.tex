@@ -15,7 +15,7 @@
 \usepackage[ngerman]{babel}
 
 % Fonts
-\usepackage{arev} % for Math
+\usepackage{arev} % use as Math font
 \usepackage[sb]{plex-sans}
 \usepackage[scale=0.8,sb]{plex-mono}
 
@@ -35,11 +35,9 @@
 
 \usepackage{csquotes}
 \usepackage{tikz}
-\usepackage{hyperref}
 
 % Tables
 \usepackage{longtable, tabu, booktabs}
-% \setlength{\tabcolsep}{8pt}          % More space between table columns (default: 6pt)
 \renewcommand{\arraystretch}{1.15}    % More space between table rows
 \newcolumntype{C}{>{\ttfamily}l}     % New column type for code (based on l type)
 
@@ -129,6 +127,8 @@
   }
 }
 
+% Hyperref should be loaded last
+\usepackage{hyperref}
 
 % Theme
 \definecolor{pcolor}{HTML}{06594f}
@@ -173,6 +173,7 @@
 
 \newcommand{\code}[1]{\texttt{#1}}
 \newcommand{\codei}[1]{\code{\textit{#1}}}
+\newcommand{\concl}[1]{\newline\vspace{0.2em}\textcolor{scolor}{\textbf{\footnotesize #1}}}
 
 \newcommand{\pie}[1]{%
 	\begin{tikzpicture}%
