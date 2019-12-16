@@ -3,19 +3,19 @@
 \begin{document}
   \frame[plain,noframenumbering]{\titlepage}
 
-  \frame[plain,noframenumbering]{
-    \frametitle{}
-    \textbf{\LARGE Überblick}
-    \bigskip
-    \large
-    \begin{enumerate}
-      \item Problemstellung
-      \item Statische Typsysteme für JavaScript
-      \item Umsetzung des Transpilers
-      \item Ergebnisse und Auswertung
-      \item Zusammenfassung
-    \end{enumerate}
-  }
+  % \frame[plain,noframenumbering]{
+  %   \frametitle{}
+  %   \textbf{\LARGE Überblick}
+  %   \bigskip
+  %   \large
+  %   \begin{enumerate}
+  %     \item Problemstellung
+  %     \item Statische Typsysteme für JavaScript
+  %     \item Umsetzung des Transpilers
+  %     \item Ergebnisse und Auswertung
+  %     \item Zusammenfassung
+  %   \end{enumerate}
+  % }
 
   \section{Problemstellung}
     \secframe{Problemstellung}
@@ -114,7 +114,7 @@ type MaybeNumber = number | null | undefined;
         \item \enquote{\textit{Balance zwischen Korrektheit und Produktivität}}~\autocite{TYPESCRIPT:DESIGN_GOALS}
         \item Typinferenz nur lokal und teilweise kontextuell
         \item Typsystem rein strukturell
-        \item graduelle Typisierung möglich
+        % \item graduelle Typisierung möglich
       \end{itemize}
     \end{frame}
 
@@ -229,33 +229,6 @@ type Alias = mixed;
       \end{columns}
     \end{frame}
 
-    \begin{frame}[fragile]
-      \frametitle{Spezialfälle (Auswahl)}
-      \begin{columns}
-        \column{\dimexpr\paperwidth-11mm}
-          \begin{lstlisting}[
-            basicstyle=\linespread{1.04}\footnotesize\ttfamily,
-            numbers=none,
-          ]
-// Flow                               // TypeScript
-
-type MaybeNull = ?null;               type MaybeNull = null | undefined;
-                                      // (vs. null | null | undefined)
-
-type FunctionType =                   type FunctionType =
-  (string, arg: number) => mixed;       (p1: string, arg: number) => unknown;
-
-function f(opt?: number = 10) {}      function f(opt: number = 10) {}
-
-class C {                             class C
-  constructor(): Date {                 constructor() {
-    return new Date();                    return new Date();
-  }                                     }
-}                                     }
-        \end{lstlisting}
-      \end{columns}
-    \end{frame}
-
   \section{Ergebnisse}
     \secframe{Ergebnisse und\secframebr Auswertung}
 
@@ -271,27 +244,6 @@ class C {                             class C
             \smallskip
             $\Rightarrow$ Ersetzung mit Typ \code{\large any}
         \end{itemize}
-      \end{frame}
-
-      \begin{frame}[fragile]
-        \frametitle{A1\hspace{0.75em}Äquivalenz der Typ-Übersetzungen (2)}
-        \begin{columns}
-          \column{\dimexpr\paperwidth-16mm}
-          \textbf{Warnung bei Transformationen mit Typverlust}
-          \vspace{1.5em}
-          \begin{lstlisting}[emph={Warning},numbers=none]
-Transpiling example.js...
-
-  1 | // @flow
-> 2 | const existentialType: * = f();
-    |                       ^
-  Warning:
-    Flow's Existential Type (*) is not expressible in TypeScript.
-    Therefore, it will be replaced with 'any'.
-    See https://github.com/Microsoft/TypeScript/issues/14466.
-            \end{lstlisting}
-        \end{columns}
-
       \end{frame}
 
       \begin{frame}
@@ -443,8 +395,8 @@ reflow \
           \\[.75em]
           Stand: November 2019
         }
-        \\[1.25em]
-        Für diese Auswahl von Bibliotheken nur geringfügige Vorteile bei TypeScript bezüglich Verfügbarkeit und Aktualität
+        % \\[1.25em]
+        % Für diese Auswahl von Bibliotheken nur geringfügige Vorteile bei TypeScript bezüglich Verfügbarkeit und Aktualität
       \end{frame}
 
       \begin{frame}
@@ -571,6 +523,33 @@ reflow \
       }
     \end{frame}
 
+    \begin{frame}[noframenumbering, fragile]
+      \frametitle{Transformation -- Spezialfälle}
+      \begin{columns}
+        \column{\dimexpr\paperwidth-11mm}
+          \begin{lstlisting}[
+            basicstyle=\linespread{1.04}\footnotesize\ttfamily,
+            numbers=none,
+          ]
+// Flow                               // TypeScript
+
+type MaybeNull = ?null;               type MaybeNull = null | undefined;
+                                      // (vs. null | null | undefined)
+
+type FunctionType =                   type FunctionType =
+  (string, arg: number) => mixed;       (p1: string, arg: number) => unknown;
+
+function f(opt?: number = 10) {}      function f(opt: number = 10) {}
+
+class C {                             class C
+  constructor(): Date {                 constructor() {
+    return new Date();                    return new Date();
+  }                                     }
+}                                     }
+        \end{lstlisting}
+      \end{columns}
+    \end{frame}
+
     \begin{frame}[noframenumbering,plain]
       \begin{figure}
         \includegraphics[width=.62\textwidth]{src/figures/formatting.pdf}
@@ -586,6 +565,26 @@ reflow \
         \item Expliziter Rückgabewert von Konstruktoren
         \item Varianz\footnote{TypeScript unterstützt nur Kovarianz}
       \end{itemize}
+    \end{frame}
+
+    \begin{frame}[noframenumbering,fragile]
+      \frametitle{Warnungen des Transpilers}
+      \begin{columns}
+        \column{\dimexpr\paperwidth-16mm}
+        \textbf{Warnung bei Transformationen mit Typverlust}
+        \vspace{1.5em}
+        \begin{lstlisting}[emph={Warning},numbers=none]
+Transpiling example.js...
+
+1 | // @flow
+> 2 | const existentialType: * = f();
+  |                       ^
+Warning:
+  Flow's Existential Type (*) is not expressible in TypeScript.
+  Therefore, it will be replaced with 'any'.
+  See https://github.com/Microsoft/TypeScript/issues/14466.
+          \end{lstlisting}
+      \end{columns}
     \end{frame}
 
     \begin{frame}[noframenumbering]
