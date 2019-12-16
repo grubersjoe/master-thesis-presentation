@@ -20,41 +20,41 @@
   \section{Problemstellung}
     \secframe{Problemstellung}
 
-    \begin{frame}
-      \frametitle{Motivation -- statische Typen für JavaScript}
-      \begin{itemize}
-        \item JavaScripts \textbf{dynamische Typisierung} erschwert die Entwicklung korrekter, sicherer und wartbarer Anwendungen~\autocite{NIKHIL:2014,PRADEL:2015,BIERMAN:2014}
-        \item Typ von Werten wird zur Laufzeit implizit umgewandelt (\textit{type coercion})
-        \item Kritisches Laufzeitverhalten wird zum Teil ignoriert
-        \item aber: Erkennung von Programmfehlern durch Einsatz eines \textbf{statischen Typsystems} möglich
-        \item Zwei Vertreter: \textit{Flow}~\autocite{FLOW:PAPER} und \textit{TypeScript}~\autocite{TYPESCRIPT:SPEC}
-      \end{itemize}
-    \end{frame}
+    % \begin{frame}
+    %   \frametitle{Motivation -- statische Typen für JavaScript}
+    %   JavaScripts \textbf{dynamische Typisierung} erschwert die Entwicklung korrekter, sicherer und wartbarer Anwendungen~\autocite{NIKHIL:2014,BIERMAN:2014}
+    %   \vspace{1em}
+    %   \begin{itemize}
+    %     \item Typ von Werten wird zur Laufzeit (eventuell ungewollt) implizit umgewandelt (\textit{type coercion})
+    %     \item Kritisches Laufzeitverhalten löst zum Teil keine Fehler aus
+    %   \end{itemize}
+    %   \vspace{1em}
+    %   Aber: Erkennung von Programmfehlern durch Einsatz eines \textbf{statischen Typsystems} möglich
+    % \end{frame}
 
     \begin{frame}[fragile]
-      \frametitle{Beispiel -- Statische Typisierung durch Flow}
-      \begin{lstlisting}
-function linearSearch<T>(list: Array<T>, searchValue: T): number | null {
-  for (const [index, value] of list.entries()) {
-    if (value === searchValue) {
-      return index;
-    }
-  }
-  return null;
-}
+      \frametitle{Statische Typisierung von JavaScript}
+      \begin{lstlisting}[
+        numbers=none,
+        basicstyle=\linespread{1.04}\large\ttfamily,
+        emph={},
+      ]
+// Flow
 
-linearSearch<number>([3, 56, 10], 56);           // 1
-linearSearch<number>([3, 56, 10], 12);           // null
-linearSearch<string>(['foo', 'bar', 'baz'], 3);  // Typfehler
+type UnionType = number | null;
+
+const x: UnionType = 3;       // OK
+const y: UnionType = null;    // OK
+const z: UnionType = false;   // Typfehler!
       \end{lstlisting}
     \end{frame}
 
     \frame{
       \frametitle{Zielsetzung der Masterarbeit}
       \begin{itemize}
-        \item Ausgangslage: das Unternehmen \textit{Spreadshirt} setzt Flow zur statischen Typisierung von JavaScript ein
-        \item Ziel: Migration bestehender Flow"=Projekte\\nach TypeScript
-        \item Händische Migration fehleranfällig und zeitaufwändig
+        \item das Unternehmen \textit{Spreadshirt} setzt Flow~\autocite{FLOW:PAPER} zur statischen Typisierung von JavaScript ein
+        \item Annahme: TypeScript~\autocite{TYPESCRIPT:SPEC} bietet Vorteile gegenüber Flow
+        \item Ziel: Migration bestehender Flow"=Projekte nach TypeScript
         \item Lösung: Entwicklung eines \textbf{Transpilers} zur Übersetzung der Flow-Typisierung nach TypeScript
         \item Transpiler = Compiler, der Quelltext einer Programmier"=sprache in andere übersetzt
       \end{itemize}
@@ -62,15 +62,13 @@ linearSearch<string>(['foo', 'bar', 'baz'], 3);  // Typfehler
 
     \begin{frame}[fragile]
       \frametitle{Beispiel einer Typ-Übersetzung}
-
       \begin{lstlisting}[
         numbers=none,
         basicstyle=\linespread{1.04}\large\ttfamily,
-        emph={number,null,undefined},
+        emph={},
       ]
 // Flow
 type MaybeNumber = ?number;
-
 
 // TypeScript
 type MaybeNumber = number | null | undefined;
@@ -96,11 +94,11 @@ type MaybeNumber = number | null | undefined;
     \begin{frame}
       \frametitle{Flow}
       \begin{itemize}
-        \item ermöglicht Verwendung von Typannotationen in\\ regulärem JavaScript-Code
-        \item Typüberprüfung durch Server im Hintergrund
-        \item Fokus auf Korrektheit\footnote{engl. \textit{Soundness}} des Typsystems
+        \item ermöglicht Verwendung von Typannotationen in JavaScript-Quelltexten
+        \item Fokus auf \emph{Korrektheit}\footnote{engl. \textit{Soundness}} des Typsystems
         \item globale Typinferenz durch pfadsensitive Datenflussanalyse
         \item Typsystem größtenteils strukturell, zum Teil nominal
+        \item Typüberprüfung durch Server im Hintergrund
         \item Parallelisierung der Typüberprüfung
       \end{itemize}
     \end{frame}
@@ -108,13 +106,13 @@ type MaybeNumber = number | null | undefined;
     \begin{frame}
       \frametitle{TypeScript}
       \begin{itemize}
-        \item vollständige Programmiersprache mit statischen Typen
-        \item Syntax ist strikte Obermenge von JavaScript
-        \item Typüberprüfung und Übersetzung nach JavaScript\\durch TypeScript-Compiler
+        \item eigenständige Programmiersprache mit statischen Typen
+        % \item Syntax ist strikte Obermenge von JavaScript
         \item \enquote{\textit{Balance zwischen Korrektheit und Produktivität}}~\autocite{TYPESCRIPT:DESIGN_GOALS}
         \item Typinferenz nur lokal und teilweise kontextuell
         \item Typsystem rein strukturell
-        % \item graduelle Typisierung möglich
+        \item graduelle Typisierung möglich
+        \item Typüberprüfung und Übersetzung nach JavaScript\\durch TypeScript-Compiler
       \end{itemize}
     \end{frame}
 
@@ -154,7 +152,7 @@ type MaybeNumber = number | null | undefined;
         \item Babel = Transpiler für JavaScript
         \item unterstützt alle geforderten Arten von Syntax
         \item gute Erweiterbarkeit durch Plugin-System
-        \item sehr ausgereiftes Projekt
+        % \item sehr ausgereiftes Projekt
       \end{itemize}
     \end{frame}
 
@@ -234,13 +232,13 @@ type Alias = mixed;
 
     \subsection{Technische Anforderungen}
       \begin{frame}
-        \frametitle{A1\hspace{0.75em}Äquivalenz der Typ-Übersetzungen (1)}
+        \frametitle{A1\hspace{0.75em}Äquivalenz der Typ-Übersetzungen}
         \begin{itemize}
           \item nahezu vollständig erzielt
           \item aber: einzelne Funktionen von Flow werden in TypeScript nicht unterstützt\\
             \smallskip
             $\Rightarrow$ Verlust von Typinformation hier unvermeidbar
-          \item keine äquivalente TypeScript-Audrücke für 3 der 17 Hilfstypen von Flow gefunden\\
+          \item keine äquivalente TypeScript-Ausdrücke für 3 der 17 Hilfstypen von Flow gefunden\\
             \smallskip
             $\Rightarrow$ Ersetzung mit Typ \code{\large any}
         \end{itemize}
@@ -250,7 +248,7 @@ type Alias = mixed;
         \frametitle{A1\hspace{0.75em}Vollständigkeit der Transformationen}
         \begin{itemize}
           \item wurde erzielt
-          \item \textit{Vollständigkeit} durch AST-Spezifikation~\autocite{BABEL:PARSER_SPEC} von Babel präzise eingegrenzt
+          \item \textit{Vollständigkeit} durch AST-Spezifikation~\autocite{BABEL:PARSER_SPEC}\\von Babel präzise eingegrenzt
           \item Verifizierung durch 1022 Fixture-Tests\\(testgetriebene Entwicklung)
           \item außerdem: statische Überprüfung der Implementierung durch Typisierung von Babel
         \end{itemize}
@@ -265,7 +263,7 @@ type Alias = mixed;
               \smallskip
               $\Rightarrow$ keine Fehler, Anforderung scheint somit erfüllt
             \item aber: Testabdeckung bei 90,5\% bzw. lediglich 18,0\%
-            \item \textbf{Nachtrag:} ein semantischer Fehler bei Umformung von Klassendekoratoren inzwischen erkannt
+            % \item \textbf{Nachtrag:} ein semantischer Fehler bei Umformung von Klassendekoratoren inzwischen erkannt
           \end{itemize}
       \end{frame}
 
@@ -305,18 +303,19 @@ reflow \
             {
               \footnotesize
               \begin{tabu} to \textwidth {@{}lr@{}}
-                Projekt Components & 3,5\% Fehlerrate \\
-                Projekt Helios     & 5,9\% Fehlerrate \\
+                Projekt A & 3,5\% Fehlerrate \\
+                Projekt B & 5,9\% Fehlerrate \\
               \end{tabu}
             }
-          \item Fazit: vereinzelt Fehler, aber originalgetreue\\Formatierung in 95,3\% der Fälle
         \end{itemize}
+        \vspace{1em}
+        Fazit: vereinzelt Fehler, aber originalgetreue\\Formatierung in 95,3\% der Fälle
       \end{frame}
 
     \subsection{Ziele}
       \begin{frame}
         \frametitle{Z1\hspace{0.75em}Erkennung weiterer Typ- und Programmfehler}
-        Nach Migration 543 bzw. 404 neue nicht-strikte Typfehler in Projekten Components und Helios:\\[1em]
+        543 bzw. 404 neue nicht-strikte Typfehler in zwei durch Transpiler migrierten Projekten:\\[1em]
         {
           \footnotesize
           \begin{tabu} to \textwidth {@{}rrX[l]@{}}
@@ -334,8 +333,6 @@ reflow \
             \midrule
           \end{tabu}
         }
-        \\[1em]
-        aber: Großteil der Typverletzungen stellen keine Programmfehler dar
       \end{frame}
 
       \begin{frame}
@@ -344,7 +341,7 @@ reflow \
           \begin{itemize}
             \item Prinzipielle Unterschiede von Flow und TypeScript
             \item Integration externer Typdefinitionen
-            \item Unzulänglichkeiten der vorherigen Typisierung mit Flow
+            \item Unzulänglichkeiten der vorherigen Typisierung durch Flow
           \end{itemize}
         \end{block}
         \smallskip
@@ -370,7 +367,7 @@ reflow \
             DefinitelyTyped & 6202 & 8188 & 1785 & 25.000 & \autocite{DEFINITELY_TYPED} \\
             \midrule
           \end{tabu}
-          \\[1em]
+          \vspace{1em}
           Stand: Oktober 2019 -- Commits und Beitragende im Jahresmittel
         }
       \end{frame}
@@ -434,8 +431,9 @@ reflow \
                 TypeScript & 6,6 Tage & 20.000 Einträge \\
               \end{tabu}
             }
-          \item Fazit: Entwicklung von TypeScript\\tatsächlich transparenter
         \end{itemize}
+        \vspace{1em}
+        Fazit: Entwicklung von TypeScript transparenter
       \end{frame}
 
   \section{Zusammenfassung}
@@ -477,6 +475,24 @@ reflow \
 
   \section{Backup}
     \setbeamertemplate{footline}{}
+
+    \begin{frame}[noframenumbering, fragile]
+      \frametitle{Beispiel -- Statische Typisierung durch Flow}
+      \begin{lstlisting}
+function linearSearch<T>(list: Array<T>, searchValue: T): number | null {
+  for (const [index, value] of list.entries()) {
+    if (value === searchValue) {
+      return index;
+    }
+  }
+  return null;
+}
+
+linearSearch<number>([3, 56, 10], 56);           // 1
+linearSearch<number>([3, 56, 10], 12);           // null
+linearSearch<string>(['foo', 'bar', 'baz'], 3);  // Typfehler
+      \end{lstlisting}
+    \end{frame}
 
     \begin{frame}[noframenumbering]
       \frametitle{Evaluation bestehender Werkzeuge}
@@ -642,7 +658,7 @@ Warning:
       \frametitle{Performance -- Vollständige Typüberprüfung (1)}
       {
         \footnotesize
-        \textbf{Projekt Components}\\[1em]
+        \textbf{Projekt A}\\[1em]
         \begin{tabu} to \textwidth {@{}rrr|rr|r@{}}
           \midrule
           {} & \multicolumn{2}{l|}{Flow} & \multicolumn{2}{l|}{TypeScript} \\
@@ -663,7 +679,7 @@ Warning:
       \frametitle{Performance -- Vollständige Typüberprüfung (2)}
       {
         \footnotesize
-        \textbf{Projekt Helios}\\[1em]
+        \textbf{Projekt B}\\[1em]
         \begin{tabu} to \textwidth {@{}rrr|rr|r@{}}
           \midrule
           {} & \multicolumn{2}{l|}{Flow} & \multicolumn{2}{l|}{TypeScript} \\
@@ -685,7 +701,7 @@ Warning:
       {
         \footnotesize
 
-        \textbf{Projekt Components}\\[1em]
+        \textbf{Projekt A}\\[1em]
         \begin{tabu} to \textwidth {@{}rrr|rr|r@{}}
           \midrule
           {} & \multicolumn{2}{l|}{Flow} & \multicolumn{2}{l}{TypeScript} \\
@@ -708,7 +724,7 @@ Warning:
       \frametitle{Performance -- Einfluss Parallelisierung (2)}
       {
         \footnotesize
-        \textbf{Projekt Helios}\\[1em]
+        \textbf{Projekt B}\\[1em]
         \begin{tabu} to \textwidth {@{}rrr|rr|r@{}}
           \midrule
           {} & \multicolumn{2}{l|}{Flow} & \multicolumn{2}{l}{TypeScript} \\
