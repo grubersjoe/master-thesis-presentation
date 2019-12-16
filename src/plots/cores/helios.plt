@@ -6,7 +6,7 @@ set output 'helios-plot.tex'
 # set terminal pngcairo dashed size 1300,800
 # set output 'plot.png'
 
-set title '\footnotesize\bfseries Helios' offset 0,-3
+set title '\footnotesize\bfseries Projekt B' offset 0,-3
 set xlabel '\footnotesize Anzahl verfügbarer Prozessorkerne'
 set ylabel '\footnotesize durchschnittliche Laufzeit in s' offset -1
 set key top right height 1
