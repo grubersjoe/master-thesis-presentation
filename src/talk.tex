@@ -42,9 +42,9 @@
 // Flow
 let x: number | null;
 
-x = 3;      // OK
-x = null;   // OK
-x = false;  // Typfehler!
+x = 3;       // OK
+x = null;    // OK
+x = 'foo';   // Typfehler!
       \end{lstlisting}
     \end{frame}
 
@@ -313,7 +313,7 @@ reflow \
 
     \subsection{Ziele}
       \begin{frame}
-        \frametitle{Z1\hspace{0.75em}Erkennung weiterer Typ- und Programmfehler}
+        \frametitle{Z1\hspace{0.75em}Neu aufgetretene Typfehler nach Migration}
         543 bzw. 404 neue nicht-strikte Typfehler in zwei durch Transpiler migrierten Projekten:\\[1em]
         {
           \footnotesize
@@ -335,8 +335,8 @@ reflow \
       \end{frame}
 
       \begin{frame}
-        \frametitle{Z1\hspace{0.75em}Erkennung weiterer Typ- und Programmfehler}
-        \begin{block}{Ursachen neu aufgetrener Typfehler}
+        \frametitle{Z1\hspace{0.75em}Ursachen und erkannte Programmfehler}
+        \begin{block}{Ursachen neu aufgetretener Typfehler}
           \begin{itemize}
             \item Prinzipielle Unterschiede von Flow und TypeScript
             \item Integration externer Typdefinitionen
@@ -366,7 +366,7 @@ reflow \
             DefinitelyTyped & 6202 & 8188 & 1785 & 25.000 & \autocite{DEFINITELY_TYPED} \\
             \midrule
           \end{tabu}
-          \vspace{1em}
+          \\[.75em]
           Stand: Oktober 2019 -- Commits und Beitragende im Jahresmittel
         }
       \end{frame}
@@ -459,7 +459,7 @@ reflow \
         \begin{tabu} to \textwidth {@{}lX[l]@{}}
           \textbf{Z1} & Erkennung weiterer Typ- und Programmfehler\concl{Einige Programmfehler durch TypeScript aufgedeckt} \\
           \textbf{Z2} & Unterstützung externer Bibliotheken\concl{Deutlich mehr Bibliotheken durch TypeScript unterstützt} \\
-          \textbf{Z3} & Performance der Typüberprüfungen\concl{Teilweise verbessert, Flow ist aber prinzipiell überlegen} \\
+          \textbf{Z3} & Performance der Typüberprüfungen\concl{Teilweise verbessert, Flow aber prinzipiell überlegen} \\
           \textbf{Z4} & Zukunftssicherheit und Transparenz der Technologie\concl{Größere Transparenz und Planungssicherheit bei TypeScript} \\
         \end{tabu}
       }
@@ -614,7 +614,7 @@ Warning:
     \end{frame}
 
     \begin{frame}[noframenumbering]
-      \frametitle{Unterstützung von Bibliotheken (Top 12) }
+      \frametitle{Unterstützung von Bibliotheken -- Top 12}
       {
         \footnotesize
         \begin{tabu} to \textwidth {@{}lrrr@{}}
